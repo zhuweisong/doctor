@@ -45,6 +45,10 @@ public class RowView extends FrameLayout{
     mTextView.setText(text);
   }
 
+  public void setText(int resid) {
+	  mTextView.setText(resid);
+  }
+  
   public void setSubtext(String text) {
     mSubTextView.setText(text);
   }

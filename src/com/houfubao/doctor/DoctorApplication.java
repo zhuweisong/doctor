@@ -3,7 +3,10 @@ package com.houfubao.doctor;
 import android.app.Application;
 import android.content.Context;
 
+import com.avos.avoscloud.AVOSCloud;
+import com.avos.avoscloud.AVObject;
 import com.houfubao.doctor.logic.main.DoctorState;
+import com.houfubao.doctor.logic.online.Question;
 import com.houfubao.doctor.logic.utils.QLog;
 
 /**
@@ -16,14 +19,12 @@ import com.houfubao.doctor.logic.utils.QLog;
  */
 public class DoctorApplication extends Application {
 
-	public static Context mContext;
 	private final static String TAG = "DoctorApplication";
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		mContext = this;
-		
+
 		DoctorState.setApplicationContext(this);
 		DoctorState.getInstance();
 	}

@@ -4,5 +4,7 @@
     <string name="app_name">doctor</string>
     <string name="order_training">"有序练习"</string>
     <string name="ramdon_training">"随机练习"</string>
-
+    <string name="special_subject_training">"专项练习"</string>
+    <string name="notdon_training">"未做题"</string>
+    
 </resources>

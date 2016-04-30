@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 
 import com.houfubao.doctor.logic.main.BaseCallBack;
 import com.houfubao.doctor.logic.main.DataResultCallbackBase;
-import com.houfubao.doctor.logic.main.Question;
+import com.houfubao.doctor.logic.online.Question;
 import com.houfubao.doctor.logic.utils.QLog;
 
 import android.content.Context;

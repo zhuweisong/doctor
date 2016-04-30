@@ -3,10 +3,11 @@ package com.houfubao.doctor.logic.main;
 import java.io.File;
 
 import com.houfubao.doctor.logic.db.DoctorDBProxy;
+import com.houfubao.doctor.logic.online.QuestionManager;
+import com.houfubao.doctor.logic.online.QuestionManagerImpl;
+import com.houfubao.doctor.logic.online.RequestorLeanClound;
 import com.houfubao.doctor.logic.utils.LogService;
 import com.houfubao.doctor.logic.utils.QLog;
-import com.houfubao.doctor.online.onlineDataManager;
-import com.houfubao.doctor.online.onlineDataManagerImpl;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
@@ -27,7 +28,8 @@ public class DoctorState {
 	private static DoctorState mInstance;
 	//
 	private DoctorDBProxy mdb;
-	private onlineDataManagerImpl mOnline;
+	private QuestionManagerImpl mQuestionManager;
+	private RequestorLeanClound mRequestor;
 	//
 	private HandlerThread mWorkThread;
 	
@@ -59,6 +61,10 @@ public class DoctorState {
 		QLog.e(TAG, "setApplicationContext error, twice" + context + "  " + sContext);
 	}
 	
+	public QuestionManager getQuestionManager() {
+		return mQuestionManager;
+	}
+	
 	private DoctorState() {
 		if (sContext==null) {
 			throw new IllegalStateException("context is null");
@@ -66,19 +72,24 @@ public class DoctorState {
 	}
 	
 	private void init(Context sContext2) {
+		
 		mWorkThread = new HandlerThread("AppStoreWorkThread");
         mWorkThread.start();
         
 		//1、db 
 		mdb = new DoctorDBProxy();
+
+		//2. LeanCloud Manager
+		mRequestor = new RequestorLeanClound();
 		
-		//2. monline
-		mOnline = new onlineDataManagerImpl();
 		
+		//3. monline
+		mQuestionManager = new QuestionManagerImpl(mRequestor);
 		
 		//
+		mRequestor.init(sContext2);
 		mdb.init(mWorkThread.getLooper(), sContext2);
-		mOnline.init(sContext2);
+		mQuestionManager.init(sContext2);
 		
 		
 		//10.
@@ -86,7 +97,7 @@ public class DoctorState {
 	}
 	
 	public void onTerminate() {
-		mOnline.terminate();
+		mQuestionManager.terminate();
 	}
 	
 	
@@ -144,8 +155,4 @@ public class DoctorState {
 		ImageLoader.getInstance().init(config);
 	}
 
-
-
-	
-	
 }

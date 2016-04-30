@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical">
+    android:orientation="vertical" 
+    android:gravity="center_horizontal">
 
     <GridView
         android:id="@+id/main_grid"
@@ -10,5 +11,6 @@
         android:layout_height="fill_parent"
         android:layout_gravity="center"
         android:listSelector="#00000000" />
+    
 </LinearLayout>
 

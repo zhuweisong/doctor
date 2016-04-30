@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import com.houfubao.doctor.logic.utils.QLog;
 import com.houfubao.doctor.logic.utils.VinsonAssertion;
 
+
 import android.os.Handler;
 import android.os.Message;
 
@@ -20,7 +21,11 @@ public class BaseCallBack<E extends DataResultCallbackBase> {
 	protected static final int _ID = 100;
 	/** Reference of observer*/
 	protected Map<String, WeakReference<E>> mCallbackRefs= new HashMap<String, WeakReference<E>>();
-    protected MainHandler mHandler = new MainHandler();
+    protected MainHandler mHandler;
+    
+    public BaseCallBack() {
+    	mHandler = new MainHandler(this);
+    }
     
 	   /**aysn for   java.util.ConcurrentModificationException
      * Add the new callback
@@ -49,49 +54,31 @@ public class BaseCallBack<E extends DataResultCallbackBase> {
 	protected void handleSubMessageOnMainThread(Message msg) {
 	}
 	
-    /**
-     * Handler of incoming messages from service.
-     */
-    public class MainHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-        	String hashcode = null;
-        	E callback = null;
-        	
-            switch(msg.what) {
-            case ADD_CALLBACK:
-            	callback = (E)msg.obj;     	
-               	hashcode = getSubScriberKey(callback);
-            	WeakReference<E> callbackRef  = new WeakReference<E>(callback);
-        		mCallbackRefs.put(hashcode, callbackRef);
-                break;
-                
-            case REMOVE_CALLBACK:
-            	callback = (E)msg.obj;           	
-            	hashcode = getSubScriberKey(callback);
-            	mCallbackRefs.remove(hashcode);
-            	break;
-            	
-            default:
-            	handleSubMessageOnMainThread(msg);
-            	break;
-            }
-        }
-        
-    	void dump() {
-
-    		Iterator<Entry<String, WeakReference<E>>> iter = mCallbackRefs.entrySet().iterator();
-    		while (iter.hasNext()) {
-    			Entry<String, WeakReference<E>> entry = (Entry<String, WeakReference<E>>)iter.next();
-    			String key = entry.getKey();
-    			WeakReference<E> value = entry.getValue();
-    			
-    			QLog.i(TAG, "BaseCallBack dump" + key + " value:" + value.get());
-    		}
-    	}
+    void internal_addcallback(Object object) {
+    	E callback = (E)object;
+    	String hashcode = getSubScriberKey(callback);
+    	WeakReference<E> callbackRef  = new WeakReference<E>(callback);
+		mCallbackRefs.put(hashcode, callbackRef);
     }
     
+    void internal_removecallback(Object object) {
+    	E callback = (E)object;           	
+    	String hashcode = getSubScriberKey(callback);
+    	mCallbackRefs.remove(hashcode);
+    }
+    
+	void dump() {
 
+		Iterator<Entry<String, WeakReference<E>>> iter = mCallbackRefs.entrySet().iterator();
+		while (iter.hasNext()) {
+			Entry<String, WeakReference<E>> entry = (Entry<String, WeakReference<E>>)iter.next();
+			String key = entry.getKey();
+			WeakReference<E> value = entry.getValue();
+			
+			QLog.i(TAG, "BaseCallBack dump" + key + " value:" + value.get());
+		}
+	}
+	
 //	protected void 
 	
 	protected E getCallbacker(String hashcode) {
@@ -107,4 +94,37 @@ public class BaseCallBack<E extends DataResultCallbackBase> {
 			return null;
 		return subscriber.getOwnerId();
 	}
+	
+    /**
+     * Handler of incoming messages from service.
+     */
+    protected static class MainHandler<T extends BaseCallBack> extends Handler {
+    	WeakReference <T> mRef;
+    	
+    	MainHandler(T t) {
+    		mRef = new WeakReference <T>(t);
+    	}
+    	
+        @Override
+        public void handleMessage(Message msg) {
+        	T baseclass = mRef.get();
+        	if (baseclass == null) {
+        		return;
+        	}
+ 
+            switch(msg.what) {
+            case ADD_CALLBACK:
+            	baseclass.internal_addcallback(msg.obj);
+                break;
+                
+            case REMOVE_CALLBACK:
+            	baseclass.internal_removecallback(msg.obj);
+            	break;
+            	
+            default:
+            	baseclass.handleSubMessageOnMainThread(msg);
+            	break;
+            }
+        }
+    }
 }

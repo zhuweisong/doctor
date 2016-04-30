@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.database.DataSetObserver;
 import android.util.Log;
 import android.view.View;
@@ -21,15 +22,10 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 	private static final String TAG = "MainActivity";
 
 	static {
-		SAMPLES.add(new Sample(OrderTraining.class, "Launcher", "Test Launcher interface", -1));
-		SAMPLES.add(new Sample(RandomTraining.class, "Market", "Test market interface", -2));
-		SAMPLES.add(new Sample(OrderTraining.class, "Launcher", "Test Launcher interface", -1));
-		SAMPLES.add(new Sample(RandomTraining.class, "Market", "Test market interface", -2));
-		
-		SAMPLES.add(new Sample(OrderTraining.class, "Launcher", "Test Launcher interface", -1));
-		SAMPLES.add(new Sample(RandomTraining.class, "Market", "Test market interface", -2));
-		SAMPLES.add(new Sample(OrderTraining.class, "Launcher", "Test Launcher interface", -1));
-		SAMPLES.add(new Sample(RandomTraining.class, "Market", "Test market interface", -2));
+		SAMPLES.add(new Sample(OrderTraining.class, R.string.order_training, "", -1));
+		SAMPLES.add(new Sample(RandomTraining.class, R.string.ramdon_training, "", -2));
+		SAMPLES.add(new Sample(OrderTraining.class, R.string.special_subject_training, "", -1));
+		SAMPLES.add(new Sample(RandomTraining.class, R.string.notdon_training, "", -2));
 	}
 	
     @Override
@@ -99,7 +95,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 				rowView = new RowView(MainActivity.this);
 			}
 			Log.i(TAG, "position:" + position);
-			rowView.setText(SAMPLES.get(position).text);
+			rowView.setText(SAMPLES.get(position).txtId);
 			rowView.setSubtext(SAMPLES.get(position).subtext);
 			return rowView;
 		}
@@ -132,22 +128,23 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 	
 	private static class Sample {
 		public Class<? extends Activity> viewClass;
-		public String text;
-		public String subtext;
+		public int txtId;
 		public int resid; //图id
+		public String subtext;
 
-		public Sample(Class<? extends Activity> viewClass, String text,	String subtext, int id) {
+		public Sample(Class<? extends Activity> viewClass, int text, String subtext, int id) {
 			this.viewClass = viewClass;
-			this.text = text;
+			this.txtId = text;
 			this.subtext = subtext;
 			this.resid = id;
 		}
 	}
 
 	@Override
-	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		// TODO Auto-generated method stub
-		
+	public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+	    Class<? extends Activity> clazz = SAMPLES.get(position).viewClass;
+		Intent i = new Intent(MainActivity.this, clazz);
+		startActivity(i);
 	}
 	
 }
