@@ -129,6 +129,7 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
 			
 			//写入数据库
 			//.....
+			
 		}
 		
 
@@ -157,8 +158,5 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
 		}
 		
 	}
-	
-
-	
 	
 }

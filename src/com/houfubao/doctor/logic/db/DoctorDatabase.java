@@ -1,7 +1,9 @@
 package com.houfubao.doctor.logic.db;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import com.houfubao.doctor.logic.online.Question;
 import com.houfubao.doctor.logic.utils.QLog;
 
 import android.content.Context;
@@ -14,14 +16,14 @@ public final class DoctorDatabase {
 	private Context mContext;
 	private FeedReaderDbHelper mDbHelper;
 	
-	private MessageEntry mMsgTable;
+	private QuestionEntry mQuestion;
 
 	
 	public DoctorDatabase(Context context) {
 		mContext = context;
 		mDbHelper = new FeedReaderDbHelper(mContext);
 		
-		mMsgTable = new MessageEntry();
+		mQuestion = new QuestionEntry();
 	}
 	
 	//For Provider
@@ -42,7 +44,7 @@ public final class DoctorDatabase {
         public void onCreate(SQLiteDatabase db) {
 		   	QLog.i(TAG, "onCreate from :" + db.getVersion());
 		   	
-            mMsgTable.createTable(db);
+		   	mQuestion.createTable(db);
         }
 		
 		@Override
@@ -50,11 +52,14 @@ public final class DoctorDatabase {
             //1. new add table
 		   	QLog.i(TAG, "onUpgrade from " + oldV + " to " + newV);
             for (int version = oldV + 1; version <= newV; version++) {
-
-            	mMsgTable.upgradeTo(db, version);
+            	mQuestion.upgradeTo(db, version);
             }
         }
     }
     
+    List<Question> queryQuestion(int start, int count) {
+       	SQLiteDatabase db = mDbHelper.getReadableDatabase();
+       	return mQuestion.query(db, start, count);
+    }
    
 }
