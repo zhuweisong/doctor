@@ -1,6 +1,13 @@
 package com.houfubao.doctor.logic.online;
 
 public class Question {
+	@Override
+	public String toString() {
+		return pos + "|" + title + "|" 
+				+ option + "|" + answer + "|" 
+				+ chapter + "|" + analysis;
+	}
+	
 	private int id;
 	private int attr;	
 	private String title;
