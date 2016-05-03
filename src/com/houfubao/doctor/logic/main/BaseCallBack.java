@@ -112,7 +112,7 @@ public class BaseCallBack<E extends DataResultCallbackBase> {
         		return;
         	}
  
-            switch(msg.what) {
+            switch (msg.what) {
             case ADD_CALLBACK:
             	baseclass.internal_addcallback(msg.obj);
                 break;

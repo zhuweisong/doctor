@@ -22,16 +22,16 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 	private static final String TAG = "MainActivity";
 
 	static {
-		SAMPLES.add(new Sample(OrderTraining.class, R.string.order_training, "", -1));
-		SAMPLES.add(new Sample(RandomTraining.class, R.string.ramdon_training, "", -2));
-		SAMPLES.add(new Sample(OrderTraining.class, R.string.special_subject_training, "", -1));
-		SAMPLES.add(new Sample(RandomTraining.class, R.string.notdon_training, "", -2));
+		SAMPLES.add(new Sample(OrderTrainingActivity.class, R.string.order_training, "", -1));
+		SAMPLES.add(new Sample(RandomTrainingActivity.class, R.string.ramdon_training, "", -2));
+		SAMPLES.add(new Sample(OrderTrainingActivity.class, R.string.special_subject_training, "", -1));
+		SAMPLES.add(new Sample(RandomTrainingActivity.class, R.string.notdon_training, "", -2));
 	}
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.main_activity);
         mGridView = (GridView)findViewById(R.id.main_grid);
         mGridView.setNumColumns(4);
         mGridView.setOnItemClickListener(this);

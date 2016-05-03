@@ -10,6 +10,6 @@ public class VinsonAssertion {
 			QLog.e("VinsonAssertion", why);
 			throw new RuntimeException(why);
 		}
-	} 
+	}
 }
  

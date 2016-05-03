@@ -54,5 +54,5 @@ public class Question {
 	  public String getPicture() {return picture;}
 	  public String getAnalysis() {return analysis;}
 	  public long getUpdateAt() { return updateAt; }
-	  public int getPos() {return pos;}
+	  public int getOrder() {return pos;}
 }

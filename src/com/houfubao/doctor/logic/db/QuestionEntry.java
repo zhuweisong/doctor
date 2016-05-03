@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.houfubao.doctor.logic.online.Question;
+import com.houfubao.doctor.logic.utils.QLog;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -19,9 +20,7 @@ public class QuestionEntry extends BaseEntry {
 	private static final String TAG = "QuestionEntry";
     public static final String TABLE_NAME = "question";
     
-    
 	public QuestionEntry(){
-
 	}
 	
     public class QuestionColumns implements BaseColumns {
@@ -52,6 +51,8 @@ public class QuestionEntry extends BaseEntry {
                     QuestionColumns.COLUMN_ORDER + INTEGER_TYPE + COMMA_SEP +
                     QuestionColumns.COLUMN_UPDATE_AT + BIGINT_TYPE +
                     " )";
+    
+
 
     @Override
     public  void createTable(SQLiteDatabase db) {
@@ -120,6 +121,8 @@ public class QuestionEntry extends BaseEntry {
 				q.setPos(cursor.getInt((cursor.getColumnIndex(QuestionColumns.COLUMN_ORDER))));
 				q.setUpdateAt(cursor.getLong((cursor.getColumnIndex(QuestionColumns.COLUMN_UPDATE_AT))));
 				
+				QLog.i(TAG, "query question: "+ q.getOrder());
+				
 				l.add(q);
 			}
 		} catch (Exception e) {
@@ -129,12 +132,108 @@ public class QuestionEntry extends BaseEntry {
 				cursor.close();
 			}
 		}
-		
+//		QLog.i(TAG, "query question: " + start + "|" + count);
     	return l;
 	}
 	
-	public void insert(List<Question> list) {
+	/**
+	 * 如果当前记录存在则删除。然后再插入进去 
+	 */
+	public void insert(SQLiteDatabase db, List<Question> list) {
 		
+		ArrayList<String> sqls = new ArrayList<String>();
+		sqls.add(getDeleteSQL(list));
+		getInsertSQL(sqls, list);
+		
+		execSqlBatch(db, sqls);
 	}
+	
+	public void delete(SQLiteDatabase db, List<Question> list) {
+		if (list.size() <= 0) {
+			return;
+		}
+		String sql = getDeleteSQL(list);
+		ArrayList<String> sqls = new ArrayList<String>();
+		sqls.add(sql);
+		
+		execSqlBatch(db, sqls);
+	}
+	
+    private static final String SQL_INSERT =
+    "INSERT INTO " + TABLE_NAME + " ( " 
+    	+ QuestionColumns.COLUMN_QID + COMMA_SEP
+    	+ QuestionColumns.COLUMN_TITLE + COMMA_SEP 
+    	+ QuestionColumns.COLUMN_OPTION + COMMA_SEP 
+    	+ QuestionColumns.COLUMN_ANSWER + COMMA_SEP 
+    	+ QuestionColumns.COLUMN_ATTR + COMMA_SEP 
+    	+ QuestionColumns.COLUMN_CHAPTER + COMMA_SEP 
+    	+ QuestionColumns.COLUMN_PICTURE + COMMA_SEP 
+    	+ QuestionColumns.COLUMN_DETAIL_ANALYSIS + COMMA_SEP 
+    	+ QuestionColumns.COLUMN_ORDER + COMMA_SEP 
+    	+ QuestionColumns.COLUMN_UPDATE_AT + " ) VALUES(";
+    
+	private void getInsertSQL(List<String> sqls, List<Question> list) {
+		int size = list.size();
+		if (list.size() <= 0) {
+			return;
+		}
+		
+		StringBuilder sb = new StringBuilder();
+		
+		for (int i = 0; i<size; i++) {
+			Question question = list.get(i);
+			sb.append(SQL_INSERT);
+			sb.append(question.getQId());
+			sb.append(",'");	
+			sb.append(question.getTitle());
+			sb.append("','");	
+			sb.append(question.getOption());
+			sb.append("','");	
+			sb.append(question.getAnswer());
+			sb.append("',");	
+			sb.append(question.getAttr());
+			sb.append(",");	
+			sb.append(question.getChapter());
+			sb.append(",'");	
+			sb.append(question.getPicture());
+			sb.append("','");	
+			sb.append(question.getAnalysis());			
+			sb.append("',");	
+			sb.append(question.getOrder());
+			sb.append(",");	
+			sb.append(question.getUpdateAt());
+			sb.append(");");	
+			sqls.add(sb.toString());
+			sb.delete(0, sb.length()); //清空
+		}
 
+	}
+	
+
+  	  
+    private static final String SQL_DELETE =
+    "DELETE FROM " + TABLE_NAME + 
+    " WHERE " + QuestionColumns.COLUMN_QID + 
+    " IN ( ";
+	
+	private String getDeleteSQL(List<Question> list) {
+		int size = list.size();
+		if (list.size() <= 0) {
+			return null;
+		}
+		
+
+		StringBuilder sb = new StringBuilder(SQL_DELETE);
+		for (int i = 0; i<size; i++) {
+			Question question = list.get(i);
+			sb.append(question.getQId());
+			if (i < size-1) {
+				sb.append(",");
+			}else {
+				sb.append(")");
+			}
+		}
+		
+		return sb.toString();
+	}
 }

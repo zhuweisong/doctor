@@ -7,4 +7,8 @@
     <string name="special_subject_training">"专项练习"</string>
     <string name="notdon_training">"未做题"</string>
     
+    <!-- 题目页 -->
+    <string name="question_analysis_detail">"试题详解"</string>
+    <string name="question_analysis_key">"考点"</string>
+        
 </resources>

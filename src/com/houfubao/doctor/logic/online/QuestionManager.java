@@ -3,7 +3,6 @@ package com.houfubao.doctor.logic.online;
 import java.util.List;
 
 import com.houfubao.doctor.logic.main.BaseCallBack;
-import com.houfubao.doctor.logic.main.Chapter;
 import com.houfubao.doctor.logic.main.DataResultCallbackBase;
 
 public class QuestionManager extends BaseCallBack<QuestionManager.QuestionResultCallback> {
@@ -22,8 +21,9 @@ public class QuestionManager extends BaseCallBack<QuestionManager.QuestionResult
     	
     	//@override
     	public void onGetQuestionCountSucceed(int chapterId, int count) {}
+    	public void onGetQuestionCountFailed(int chapterId) {}
     	
-    	//@override
+    	
     	public void onGetChapterInfo(List<Chapter> list){}
     }
 
@@ -42,7 +42,7 @@ public class QuestionManager extends BaseCallBack<QuestionManager.QuestionResult
     /**
      * 获取当前章节所有题目个数,-1表示全部
      */
-    public void getQuestionCount(int chapterId) {}
+    public void getQuestionCount(QuestionResultCallback callback, int chapterId) {}
     
     /**
      * 获取当前章节所有题目个数,-1表示全部

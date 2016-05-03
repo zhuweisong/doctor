@@ -1,6 +1,5 @@
 package com.houfubao.doctor.logic.db;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.houfubao.doctor.logic.online.Question;
@@ -33,7 +32,7 @@ public final class DoctorDatabase {
     
     public class FeedReaderDbHelper extends SQLiteOpenHelper {
         // If you change the database schema, you must increment the database version.
-        public static final int DATABASE_VERSION = 11;
+        public static final int DATABASE_VERSION = 1;
         public static final String DATABASE_NAME = "GameBoxLauncher.db";
 
         public FeedReaderDbHelper(Context context) {
@@ -62,4 +61,8 @@ public final class DoctorDatabase {
        	return mQuestion.query(db, start, count);
     }
    
+    void insert(List<Question> list) {
+       	SQLiteDatabase db = mDbHelper.getWritableDatabase();
+       	mQuestion.insert(db, list);
+    }
 }

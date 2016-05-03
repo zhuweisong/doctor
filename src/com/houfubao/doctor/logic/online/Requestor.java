@@ -11,11 +11,18 @@ public abstract class Requestor {
 	
 	
 	/**
-	 * 从后台读取问题列表
+	 * 从后台读取数据
 	 */
 	public abstract void getQuestions(RequestCallback callback, String tag, int from, int count);
 	
+	public abstract void getQuestionCount(RequestCallback callback, String tag, int chapterId);
 	
+	
+	
+	
+	/**
+	 * callback注册/清除
+	 */
 	//////////////////
 	protected RequestCallback getCallbacker(String hashcode) {
 		WeakReference<RequestCallback> callbackRef = mCallbackRefs.get(hashcode);
@@ -45,6 +52,5 @@ public abstract class Requestor {
         	mCallbackRefs.remove(hashcode);
 		}
 	}
-	
 	
 }

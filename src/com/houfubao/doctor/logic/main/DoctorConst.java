@@ -10,4 +10,6 @@ public class DoctorConst {
 	public static final int FROM_NETWORK = 1;
 	
 	public static final String SEPRATOR = "!";
+	
+	public static final String SHAREDPREFERENCE_KEY_SET = "Doctor_prefence";
 }

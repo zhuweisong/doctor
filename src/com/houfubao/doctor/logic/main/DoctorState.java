@@ -78,17 +78,17 @@ public class DoctorState {
         
 		//1、db 
 		mdb = new DoctorDBProxy();
-
+		mdb.init(mWorkThread.getLooper(), sContext2);
+		
 		//2. LeanCloud Manager
 		mRequestor = new RequestorLeanClound();
 		
-		
 		//3. monline
-		mQuestionManager = new QuestionManagerImpl(mRequestor);
+		mQuestionManager = new QuestionManagerImpl(mRequestor, mdb);
 		
 		//
 		mRequestor.init(sContext2);
-		mdb.init(mWorkThread.getLooper(), sContext2);
+
 		mQuestionManager.init(sContext2);
 		
 		
@@ -107,8 +107,8 @@ public class DoctorState {
 	 * @param context
 	 *            传递上下文
 	 */
-	private final static int MaxFreqMemorySizeLimit = 32 * 1024 * 1024;// 最大内存缓存50M
-	private final static int MaxDiskCacheSize = 64 * 1024 * 1024; // 最大 硬盘缓存500M
+	private final static int MaxFreqMemorySizeLimit = 8 * 1024 * 1024;// 最大内存缓存50M
+	private final static int MaxDiskCacheSize = 32 * 1024 * 1024; // 最大 硬盘缓存500M
 	private final static int ConnectTimeout = 5 * 1000;// 默认连接超时30s
 	private final static int ReadTimeout = 30 * 1000;// 默认连接读取超时120s
 	private final static int MaxCacheFileCount = 500;// 最大缓存文件数
