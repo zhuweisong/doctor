@@ -1,6 +1,9 @@
 package com.houfubao.doctor.view;
 
+import java.util.List;
+
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,20 +13,43 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.houfubao.doctor.R;
+import com.houfubao.doctor.logic.main.DoctorState;
 import com.houfubao.doctor.logic.online.Question;
+import com.houfubao.doctor.logic.online.QuestionManager;
 
 public class QuestionMainView extends RelativeLayout {
-	Question mQuestion;
+	public final static String TAG = "QuestionMainView";
+	
+	int mOrder;
+
 	ImageView mSingleOrMulti;
 	TextView mTitle;
 	QuestionOptionView mOptionView;
 	TextView mAnalysis;
 	
+	Question mQuestion;
+	QuestionManager mQuestionManager;
+	QuestionManager.QuestionResultCallback mCallback = new MyQuestionManager();
+	
 	public QuestionMainView(Context context) {
 		super(context, null, 0);
 		initVew(context);
+		mQuestionManager = DoctorState.getInstance().getQuestionManager();
+
 	}
 	
+	@Override
+	protected void onAttachedToWindow() {
+
+		super.onAttachedToWindow();
+	}
+
+	@Override
+	protected void onDetachedFromWindow() {
+		mQuestionManager.removeCallback(mCallback);
+		super.onDetachedFromWindow();
+	}
+
 	void initVew(Context context) {
 		View rootView = LayoutInflater.from(context).inflate(R.layout.question_main, this);
 		mSingleOrMulti = (ImageView)rootView.findViewById(R.id.question_single_or_multi);
@@ -37,18 +63,21 @@ public class QuestionMainView extends RelativeLayout {
 		updateView(question);
 	}
 	
+	public void setQuestionOrder(int order) {
+		Log.i(TAG, "setQuestionOrder: " + order);
+		mOrder = order;
+		mQuestionManager.addCallback(mCallback);
+		mQuestionManager.getQuestion(mCallback, order);
+	}
+	
 	private void updateView(Question question) {
 		//mSingleOrMulti
 		mTitle.setText(mQuestion.getTitle());
 		mAnalysis.setText(mQuestion.getAnalysis());
 	}
 	  
-    public int getPos() {
-    	if (mQuestion != null)
-    		return mQuestion.getOrder();
-    	else {
-			return -1;
-		}
+    public int getOrder() {
+    	return mOrder;
     }
 
 	/**
@@ -94,5 +123,29 @@ public class QuestionMainView extends RelativeLayout {
 	}
 	
 	
+	/**
+	 * 获取题目的回调
+	 * @author zhuweisong
+	 */
+	class MyQuestionManager extends QuestionManager.QuestionResultCallback {
 
+		@Override
+		public void onGetQuestionSucceed(int from, int count, List<Question> list) {
+			
+			super.onGetQuestionSucceed(from, count, list);
+		}
+
+		@Override
+		public void onGetQuestionFailed(int from, int count) {
+			
+			super.onGetQuestionFailed(from, count);
+		}
+
+		@Override
+		public void onGetQuestionSucceed(int pos, Question q) {
+			setQuestion(q);
+			super.onGetQuestionSucceed(pos, q);
+		}
+	}
+	
 }

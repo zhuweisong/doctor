@@ -88,7 +88,7 @@ public class RequestorLeanClound extends Requestor {
 			}
 			String tag = extra[1];
 		    int chapid = Integer.parseInt(extra[2]);
-			if (e != null) {
+			if (e == null) {
 			    callback.onGetQuestionCountSucceed(tag, chapid, count, DoctorConst.FROM_NETWORK);
 			}
 			else {

@@ -19,6 +19,7 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
     private static final String TAG = "QuestionManagerImpl";
     private static final int NETWORK_RQUEST_COUNT = 5; //每次从网络请求的数据量
     private static final int DB_RQUEST_COUNT = 5; //每次从数据库请求的数据量
+    private static final int DB_PRELOAD_COUNT = 5; //每次从数据库请求的数据量
     private static final int ALL_CHAPTER = -1;
     private final String KEY_LAST_ORDER = "LAST_QUESTION_ORDER"; //
     
@@ -33,9 +34,11 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
     
     /** */
     Requestor mRequestor;
-    DoctorDBProxy mDbProxy;
     QuestionRequestCallback mRequestCallback;
+    
+    DoctorDBProxy mDbProxy;
     DBRequestCallback mDBRequestCallback;
+
     
     public QuestionManagerImpl(Requestor requestor, DoctorDBProxy db) {
     	mRequestor = requestor;
@@ -99,13 +102,25 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
     		Question copy = new Question(question);
     		mHandler.obtainMessage(REQUEST_QUESTION_POS, DoctorConst.FROM_SELF, 0,  
     				new DoctorStruct.MessageObj(ownerId, copy)).sendToTarget();
-    		return;
+    		preloadFromDB(order);
+    	    		return;
     	}
+    	
     	preloadFromNetwork(ownerId, order);
     }
     
-	void preloadFromNetwork(String ownerId, int pos) {
+    private void preloadFromNetwork(String ownerId, int pos) {
 		mRequestor.getQuestions(mRequestCallback, ownerId, pos, NETWORK_RQUEST_COUNT);
+	}
+	
+	private void preloadFromDB(int curOrder)  {
+		int maxOrder = Math.min(curOrder + DB_PRELOAD_COUNT, mTotal);
+		for (;maxOrder > curOrder;maxOrder--) {
+			if (mCache.get(maxOrder)!=null) {
+				mDbProxy.queryQuestion(mDBRequestCallback, TAG, maxOrder+1, DB_RQUEST_COUNT);
+				return;
+			}
+		}
 	}
     
     
@@ -142,11 +157,11 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
 			break;
 			
 		case REQUEST_QUESTION_POS:
-			handleQuestionCountOnMainThread(msgObj.ownerId, msgObj.int1, msgObj.int2, from);
+			handleQuestionPosOnMainThread(msgObj.ownerId, msgObj.int1, (Question)msgObj.obj0, from);
 			break;
 			
 		case REQUEST_QUESTION_COUNT:
-
+			handleQuestionCountOnMainThread(msgObj.ownerId, msgObj.int1, msgObj.int2, from);
 			break;
 			
 
@@ -156,7 +171,20 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
 		super.handleSubMessageOnMainThread(msg);
 	}
     
-    private void handleQuestionListOnMainThread(String ownerId, 
+    private void handleQuestionPosOnMainThread(String ownerId, int order, Question q, int from) {
+		if (from == DoctorConst.FROM_NETWORK) {
+			mCache.put(q.getOrder(), q);
+		}
+		
+		QuestionResultCallback callback = getCallbacker(ownerId);
+		if (callback != null ) {
+			callback.onGetQuestionSucceed(order, q);
+		} else {
+			QLog.e(TAG, "handleQuestionPosOnMainThread error" + order);
+		}
+	}
+
+	private void handleQuestionListOnMainThread(String ownerId, 
     		int start, int count, List<Question> ql, int from) {
 		if (from == DoctorConst.FROM_NETWORK) {
 			//
