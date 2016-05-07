@@ -28,6 +28,7 @@ public class QuestionOptionView extends LinearLayout {
 	
 	public QuestionOptionView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
+//		setOrientation(LinearLayout.VERTICAL);
 	}
 	
 	void setItemWidth(int width) {
@@ -68,11 +69,7 @@ public class QuestionOptionView extends LinearLayout {
 	}
 
 	public void notifyDataSetChanged() {
-		int width  = LayoutParams.WRAP_CONTENT;
-		if (mWidth > 0){
-			width = mWidth;
-		}
-		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width, LayoutParams.WRAP_CONTENT);
+		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		// 备份现有的child
 		int childcount = getChildCount();
 		View[] v = new View[childcount];

@@ -2,7 +2,10 @@ package com.houfubao.doctor.view;
 
 import java.util.List;
 
+import android.R.anim;
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.houfubao.doctor.R;
+import com.houfubao.doctor.logic.main.DoctorConst;
 import com.houfubao.doctor.logic.main.DoctorState;
 import com.houfubao.doctor.logic.online.Question;
 import com.houfubao.doctor.logic.online.QuestionManager;
@@ -25,6 +29,7 @@ public class QuestionMainView extends RelativeLayout {
 	ImageView mSingleOrMulti;
 	TextView mTitle;
 	QuestionOptionView mOptionView;
+	OptionAdapter mOptionAdapter;
 	TextView mAnalysis;
 	
 	Question mQuestion;
@@ -33,9 +38,9 @@ public class QuestionMainView extends RelativeLayout {
 	
 	public QuestionMainView(Context context) {
 		super(context, null, 0);
-		initVew(context);
 		mQuestionManager = DoctorState.getInstance().getQuestionManager();
 
+		initVew(context);
 	}
 	
 	@Override
@@ -56,10 +61,14 @@ public class QuestionMainView extends RelativeLayout {
 		mTitle = (TextView)rootView.findViewById(R.id.question_title);
 		mOptionView = (QuestionOptionView)rootView.findViewById(R.id.question_option);
 		mAnalysis = (TextView)findViewById(R.id.question_anlaysis);	
+		
+		mOptionAdapter = new OptionAdapter();
+		mOptionView.setAdapter(mOptionAdapter);
 	}
 	
 	public void setQuestion(Question question) {
 		mQuestion = question;
+		mOptionAdapter.updateOptions(mQuestion.getOption());
 		updateView(question);
 	}
 	
@@ -80,45 +89,55 @@ public class QuestionMainView extends RelativeLayout {
     	return mOrder;
     }
 
+    
 	/**
 	 * 答案选项 
 	 */
-	class AnswerOptionAdapter extends BaseAdapter {
-		String []mAnswerOption;
+	class OptionAdapter extends BaseAdapter {
+		String []mOptions;
+		int mColor;
 		
-		void updateAnswerOption(String [] option) {
-			mAnswerOption = option;
+		public OptionAdapter() {
+			mColor = getContext().getResources().getColor(R.color.question_option);
 		}
 		
 		@Override
 		public int getCount() {
-			if (mAnswerOption != null)
-				return mAnswerOption.length;
-			return 0;
+			// TODO Auto-generated method stub
+			return mOptions.length;
+		}
+		
+		public void updateOptions(String options) {
+			mOptions = options.split(DoctorConst.DOUBLE_SEPRATOR);
+			notifyDataSetChanged();
 		}
 
 		@Override
 		public Object getItem(int pos) {
-			if (mAnswerOption != null) {
-				return mAnswerOption[pos];
+			// TODO Auto-generated method stub
+			if (mOptions != null) {
+				return mOptions[pos];
 			}
 			return null;
 		}
 
 		@Override
 		public long getItemId(int arg0) {
+			// TODO Auto-generated method stub
 			return arg0;
 		}
 
 		@Override
 		public View getView(int pos, View v, ViewGroup group) {
-			TextView option = null;
-			if (v == null) {
-				option = new TextView(getContext());
-			}
 			
-			option.setText(mAnswerOption[pos]);			
-			return option;
+			if (v == null) {
+				TextView temp = new TextView(getContext());
+				temp.setTextColor(mColor);
+				v = temp;
+			}
+			String string = mOptions[pos];
+			((TextView)v).setText(string);
+			return v;
 		}
 	}
 	
@@ -147,5 +166,7 @@ public class QuestionMainView extends RelativeLayout {
 			super.onGetQuestionSucceed(pos, q);
 		}
 	}
+	
+	
 	
 }
