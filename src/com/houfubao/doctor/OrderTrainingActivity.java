@@ -127,7 +127,6 @@ public class OrderTrainingActivity extends Activity {
 			container.addView(view);
 			return view;
 		}
-
 	}
 	
 
