@@ -2,10 +2,7 @@ package com.houfubao.doctor.view;
 
 import java.util.List;
 
-import android.R.anim;
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;

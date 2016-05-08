@@ -4,12 +4,15 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-        <!--psts-->
+    <!--psts-->
     <dimen name="psts_dot_wh">8dp</dimen>
     <dimen name="psts_dot_m_right">9dp</dimen>
     <dimen name="psts_dot_m_top">7dp</dimen>
     <dimen name="psts_dot_linelayout_h">23dp</dimen>
     <dimen name="psts_dot_txt_size">10sp</dimen>
+    
+    <!--psts-->
+    <dimen name="question_main_font">18sp</dimen>
     
     
 </resources>

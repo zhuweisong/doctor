@@ -22,9 +22,8 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
-
 /**
- * Created by linhonghong on 2015/8/11.
+ * Created by sevenzhu on 2016/05/08.
  */
 public class ExamingFragment extends Fragment implements AdapterView.OnItemClickListener {
 

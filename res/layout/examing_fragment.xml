@@ -12,8 +12,7 @@
         android:layout_gravity="center"
         android:listSelector="#00000000" /-->
     
-        <ListView
-
+   <ListView
       android:id="@+id/main_list_view"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
