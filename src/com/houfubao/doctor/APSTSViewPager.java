@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 
 /**
- * Created by linhonghong on 2015/8/10.
+ * Created by sevenzhu on 2016/5/8.
  */
 public class APSTSViewPager extends ViewPager {
     private boolean mNoFocus = false; //if true, keep View don't move

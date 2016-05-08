@@ -1,4 +1,4 @@
-package com.lhh.apst.fragments;
+package com.houfubao.doctor.fragments;
 
 import com.houfubao.doctor.R;
 
@@ -8,20 +8,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-
 /**
  * Created by linhonghong on 2015/8/11.
  */
-public class FourthFragment extends Fragment {
+public class SecondFragment extends Fragment {
 
-    public static FourthFragment instance() {
-        FourthFragment view = new FourthFragment();
+    public static SecondFragment instance() {
+        SecondFragment view = new SecondFragment();
         return view;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fourth_fragment, null);
+        View view = inflater.inflate(R.layout.second_fragment, null);
         return view;
     }
 }

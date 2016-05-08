@@ -1,6 +1,5 @@
 package com.houfubao.doctor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.houfubao.doctor.logic.main.DoctorState;

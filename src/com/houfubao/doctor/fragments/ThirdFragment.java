@@ -1,4 +1,4 @@
-package com.lhh.apst.fragments;
+package com.houfubao.doctor.fragments;
 
 import com.houfubao.doctor.R;
 

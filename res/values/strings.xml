@@ -11,5 +11,12 @@
     <!-- 题目页 -->
     <string name="question_analysis_detail">"试题详解"</string>
     <string name="question_analysis_key">"考点"</string>
+    
+    <!-- 题目页 -->
+    <string name="main_tab_examine">"医考"</string>
+    <string name="main_tab_examine">"医考"</string>
+    <string name="main_tab_examine">"医考"</string>
+    <string name="main_tab_mine">"我"</string>
+    
         
 </resources>
