@@ -4,4 +4,13 @@
     <!-- multi -->
     <color name="question_option">#FF000000</color>
     
+    <color name="background_tab_pressed">#6633B5E5</color>
+    <color name="red">#E43F3E</color>
+  	<color name="home_bar_text_normal">#6a6c6f</color>
+    <color name="home_bar_text_push">#ff5959</color>
+    <color name="textnormal">#adadad</color>
+
+    <color name="btn_bg_pressed_color">#ffacac</color>
+    <color name="btn_bg_color">#ff5959</color>
+    
 </resources>

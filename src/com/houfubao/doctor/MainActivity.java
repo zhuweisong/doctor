@@ -13,9 +13,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ListAdapter;
+import android.widget.ListView;
 
 public class MainActivity extends Activity implements AdapterView.OnItemClickListener {
-	private GridView mGridView;
+	private ListView mGridView;
 	private ExampleListAdapter mAdapter;
 	
 	private static final List<Sample> SAMPLES = new ArrayList<Sample>();
@@ -26,14 +27,15 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 		SAMPLES.add(new Sample(RandomTrainingActivity.class, R.string.ramdon_training, "", -2));
 		SAMPLES.add(new Sample(OrderTrainingActivity.class, R.string.special_subject_training, "", -1));
 		SAMPLES.add(new Sample(RandomTrainingActivity.class, R.string.notdon_training, "", -2));
+		SAMPLES.add(new Sample(IconTabActivity.class, R.string.function_test, "", -2));
 	}
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-        mGridView = (GridView)findViewById(R.id.main_grid);
-        mGridView.setNumColumns(4);
+        mGridView = (ListView)findViewById(R.id.main_list_view);
+//        mGridView.setNumColumns(4);
         mGridView.setOnItemClickListener(this);
         mAdapter = new ExampleListAdapter();
         mGridView.setAdapter(mAdapter);

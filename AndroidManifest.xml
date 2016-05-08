@@ -29,7 +29,8 @@
         </activity>
         <activity android:name="com.houfubao.doctor.OrderTrainingActivity" android:label="@string/order_training" />
         <activity android:name="com.houfubao.doctor.RandomTrainingActivity" android:label="@string/ramdon_training" />
-
+        <activity android:name="com.houfubao.doctor.IconTabActivity" android:label="@string/function_test" />
+        
     </application>
 
 </manifest>
