@@ -11,8 +11,10 @@
     <dimen name="psts_dot_linelayout_h">23dp</dimen>
     <dimen name="psts_dot_txt_size">10sp</dimen>
     
-    <!--psts-->
+    <!--question-->
     <dimen name="question_main_font">18sp</dimen>
-    
-    
+    <dimen name="question_option_fontsize">16sp</dimen>
+    <dimen name="option_padding">12dp</dimen>    
+    <dimen name="option_first_indent">12dp</dimen>    
+        
 </resources>

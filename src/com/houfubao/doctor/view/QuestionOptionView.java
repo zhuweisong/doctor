@@ -69,7 +69,8 @@ public class QuestionOptionView extends LinearLayout {
 	}
 
 	public void notifyDataSetChanged() {
-		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+
 		// 备份现有的child
 		int childcount = getChildCount();
 		View[] v = new View[childcount];

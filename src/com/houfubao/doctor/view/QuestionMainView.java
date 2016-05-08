@@ -53,7 +53,7 @@ public class QuestionMainView extends RelativeLayout {
 	}
 
 	void initVew(Context context) {
-		View rootView = LayoutInflater.from(context).inflate(R.layout.question_main, this);
+		View rootView = LayoutInflater.from(context).inflate(R.layout.question_main_view, this);
 		mSingleOrMulti = (ImageView)rootView.findViewById(R.id.question_single_or_multi);
 		mTitle = (TextView)rootView.findViewById(R.id.question_title);
 		mOptionView = (QuestionOptionView)rootView.findViewById(R.id.question_option);
@@ -92,10 +92,7 @@ public class QuestionMainView extends RelativeLayout {
 	 */
 	class OptionAdapter extends BaseAdapter {
 		String []mOptions;
-		int mColor;
-		
 		public OptionAdapter() {
-			mColor = getContext().getResources().getColor(R.color.question_option);
 		}
 		
 		@Override
@@ -128,8 +125,7 @@ public class QuestionMainView extends RelativeLayout {
 		public View getView(int pos, View v, ViewGroup group) {
 			
 			if (v == null) {
-				TextView temp = new TextView(getContext());
-				temp.setTextColor(mColor);
+				TextView temp = (TextView)LayoutInflater.from(getContext()).inflate(R.layout.question_option, null);
 				v = temp;
 			}
 			String string = mOptions[pos];

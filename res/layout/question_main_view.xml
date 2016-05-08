@@ -28,13 +28,18 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="12dp"
         android:text="@string/question_analysis_detail"
+        android:textSize="@dimen/question_main_font"
         />
     
     <TextView
         android:id="@+id/question_anlaysis" 
         android:layout_width="wrap_content" 
         android:layout_height="wrap_content"
+        android:textSize="@dimen/question_option_fontsize"
+    	android:paddingLeft="@dimen/option_first_indent"
         />
     
 </LinearLayout>
