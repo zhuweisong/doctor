@@ -10,7 +10,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.widget.RelativeLayout;
 
-import com.lhh.apst.fragments.FirstFragment;
+import com.lhh.apst.fragments.ExamingFragment;
 import com.lhh.apst.fragments.FourthFragment;
 import com.lhh.apst.fragments.SecondFragment;
 import com.lhh.apst.fragments.ThirdFragment;
@@ -19,7 +19,7 @@ import com.lhh.apst.library.AdvancedPagerSlidingTabStrip;
 /**
  * Created by linhonghong on 2015/8/11.
  */
-public class IconTabActivity extends ActionBarActivity implements ViewPager.OnPageChangeListener{
+public class MainTabActivity extends ActionBarActivity implements ViewPager.OnPageChangeListener{
 
     public AdvancedPagerSlidingTabStrip mAPSTS;
     public APSTSViewPager mVP;
@@ -31,7 +31,7 @@ public class IconTabActivity extends ActionBarActivity implements ViewPager.OnPa
 
     private static final int VIEW_SIZE = 4;
 
-    private FirstFragment mFirstFragment = null;
+    private ExamingFragment mFirstFragment = null;
     private SecondFragment mSecondFragment = null;
     private ThirdFragment mThirdFragment = null;
     private FourthFragment mFourthFragment = null;
@@ -89,7 +89,7 @@ public class IconTabActivity extends ActionBarActivity implements ViewPager.OnPa
                 switch (position){
                     case  VIEW_FIRST:
                         if(null == mFirstFragment)
-                            mFirstFragment = FirstFragment.instance();
+                            mFirstFragment = ExamingFragment.instance();
                         return mFirstFragment;
 
                     case VIEW_SECOND:

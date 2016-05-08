@@ -1,21 +1,33 @@
-package com.houfubao.doctor;
+package com.lhh.apst.fragments;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import android.os.Bundle;
+import com.houfubao.doctor.MainTabActivity;
+import com.houfubao.doctor.OrderTrainingActivity;
+import com.houfubao.doctor.R;
+import com.houfubao.doctor.RandomTrainingActivity;
+import com.houfubao.doctor.RowView;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.database.DataSetObserver;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
-public class MainActivity extends Activity implements AdapterView.OnItemClickListener {
+
+/**
+ * Created by linhonghong on 2015/8/11.
+ */
+public class ExamingFragment extends Fragment implements AdapterView.OnItemClickListener {
+
 	private ListView mGridView;
 	private ExampleListAdapter mAdapter;
 	
@@ -27,35 +39,25 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 		SAMPLES.add(new Sample(RandomTrainingActivity.class, R.string.ramdon_training, "", -2));
 		SAMPLES.add(new Sample(OrderTrainingActivity.class, R.string.special_subject_training, "", -1));
 		SAMPLES.add(new Sample(RandomTrainingActivity.class, R.string.notdon_training, "", -2));
-		SAMPLES.add(new Sample(IconTabActivity.class, R.string.function_test, "", -2));
+		SAMPLES.add(new Sample(MainTabActivity.class, R.string.function_test, "", -2));
 	}
-	
+
+    public static ExamingFragment instance() {
+        ExamingFragment view = new ExamingFragment();
+		return view;
+	}
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_activity);
-        mGridView = (ListView)findViewById(R.id.main_list_view);
-//        mGridView.setNumColumns(4);
-        mGridView.setOnItemClickListener(this);
-        mAdapter = new ExampleListAdapter();
-        mGridView.setAdapter(mAdapter);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.examing_fragment, null);
+        mGridView = (ListView)view.findViewById(R.id.main_list_view);
+//      mGridView.setNumColumns(4);
+      mGridView.setOnItemClickListener(this);
+      mAdapter = new ExampleListAdapter();
+      mGridView.setAdapter(mAdapter);
+      
+        return view;
     }
-
-	@Override
-	protected void onDestroy() {
-
-		super.onDestroy();
-	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-	}
     
 	private class ExampleListAdapter implements ListAdapter {
 
@@ -94,7 +96,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 			if (convertView != null) {
 				rowView = (RowView) convertView;
 			} else {
-				rowView = new RowView(MainActivity.this);
+				rowView = new RowView(getActivity());
 			}
 			Log.i(TAG, "position:" + position);
 			rowView.setText(SAMPLES.get(position).txtId);
@@ -145,7 +147,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
 	    Class<? extends Activity> clazz = SAMPLES.get(position).viewClass;
-		Intent i = new Intent(MainActivity.this, clazz);
+		Intent i = new Intent(getActivity(), clazz);
 		startActivity(i);
 	}
 	
