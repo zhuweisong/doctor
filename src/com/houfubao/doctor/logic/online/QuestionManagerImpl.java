@@ -57,6 +57,7 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
     	mDBRequestCallback = new DBRequestCallback();
     	mDbProxy.addCallback(mDBRequestCallback);
        	mDbProxy.queryQuestion(mDBRequestCallback, TAG, mLastOrder, DB_RQUEST_COUNT);
+       	preloadFromDB(mLastOrder);
 	}
 	
 	public void terminate() {
@@ -98,15 +99,18 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
     	String ownerId = callback.getOwnerId();
     	
     	Question question = mCache.get(order);
+		QLog.i(TAG, "get Question:" + order + "|" + (question==null));
     	if (question != null) {
     		Question copy = new Question(question);
     		mHandler.obtainMessage(REQUEST_QUESTION_POS, DoctorConst.FROM_SELF, 0,  
     				new DoctorStruct.MessageObj(ownerId, copy)).sendToTarget();
-    		preloadFromDB(order);
-    	    		return;
+    	} else {
+        	preloadFromNetwork(ownerId, order);
     	}
     	
-    	preloadFromNetwork(ownerId, order);
+		preloadFromDB(order);
+		
+		return;
     }
     
     private void preloadFromNetwork(String ownerId, int pos) {
@@ -115,9 +119,9 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
 	
 	private void preloadFromDB(int curOrder)  {
 		int maxOrder = Math.min(curOrder + DB_PRELOAD_COUNT, mTotal);
-		for (;maxOrder > curOrder;maxOrder--) {
-			if (mCache.get(maxOrder)!=null) {
-				mDbProxy.queryQuestion(mDBRequestCallback, TAG, maxOrder+1, DB_RQUEST_COUNT);
+		for (int i = curOrder;i < maxOrder;i++) {
+			if (mCache.get(i)==null) {
+				mDbProxy.queryQuestion(mDBRequestCallback, TAG, i, DB_RQUEST_COUNT);
 				return;
 			}
 		}
