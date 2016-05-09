@@ -5,6 +5,7 @@ import java.util.List;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -126,12 +127,22 @@ public class QuestionMainView extends RelativeLayout {
 			
 			if (v == null) {
 				TextView temp = (TextView)LayoutInflater.from(getContext()).inflate(R.layout.question_option, null);
-				v = temp;
+				 v = temp;
+				 v.setOnClickListener(new onOptionClicked());
 			}
 			String string = mOptions[pos];
 			((TextView)v).setText(string);
 			return v;
 		}
+	}
+	
+	class onOptionClicked implements View.OnClickListener {
+
+		@Override
+		public void onClick(View arg0) {
+			
+		}
+		
 	}
 	
 	

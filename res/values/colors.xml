@@ -3,7 +3,8 @@
 
     <!-- multi -->
     <color name="question_option">#FF000000</color>
-    
+    <color name="question_option_background">#FFE0E0E0</color>
+        
     <color name="background_tab_pressed">#6633B5E5</color>
     <color name="red">#E43F3E</color>
   	<color name="home_bar_text_normal">#6a6c6f</color>
