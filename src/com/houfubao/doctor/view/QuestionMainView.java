@@ -3,6 +3,12 @@ package com.houfubao.doctor.view;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -27,7 +33,6 @@ public class QuestionMainView extends RelativeLayout {
 	ImageView mSingleOrMulti;
 	TextView mTitle;
 	QuestionOptionView mOptionView;
-	OptionAdapter mOptionAdapter;
 	TextView mAnalysis;
 	
 	Question mQuestion;
@@ -60,13 +65,11 @@ public class QuestionMainView extends RelativeLayout {
 		mOptionView = (QuestionOptionView)rootView.findViewById(R.id.question_option);
 		mAnalysis = (TextView)findViewById(R.id.question_anlaysis);	
 		
-		mOptionAdapter = new OptionAdapter();
-		mOptionView.setAdapter(mOptionAdapter);
+
 	}
 	
 	public void setQuestion(Question question) {
 		mQuestion = question;
-		mOptionAdapter.updateOptions(mQuestion.getOption());
 		updateView(question);
 	}
 	
@@ -78,9 +81,21 @@ public class QuestionMainView extends RelativeLayout {
 	}
 	
 	private void updateView(Question question) {
+
 		//mSingleOrMulti
-		mTitle.setText(mQuestion.getTitle());
+		Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.jiakao_practise_danxuanti_day);  
+        ImageSpan imgSpan = new ImageSpan(b);  
+        SpannableString spanString = new SpannableString("icon");  
+        spanString.setSpan(imgSpan, 0, 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);  
+        mTitle.setText(spanString);  
+        mTitle.append(mQuestion.getTitle());
+
+        //答案选项
+        mOptionView.setOption(mQuestion.getOption());
+        
+        //正文
 		mAnalysis.setText(mQuestion.getAnalysis());
+		
 	}
 	  
     public int getOrder() {
@@ -88,63 +103,6 @@ public class QuestionMainView extends RelativeLayout {
     }
 
     
-	/**
-	 * 答案选项 
-	 */
-	class OptionAdapter extends BaseAdapter {
-		String []mOptions;
-		public OptionAdapter() {
-		}
-		
-		@Override
-		public int getCount() {
-			// TODO Auto-generated method stub
-			return mOptions.length;
-		}
-		
-		public void updateOptions(String options) {
-			mOptions = options.split(DoctorConst.DOUBLE_SEPRATOR);
-			notifyDataSetChanged();
-		}
-
-		@Override
-		public Object getItem(int pos) {
-			// TODO Auto-generated method stub
-			if (mOptions != null) {
-				return mOptions[pos];
-			}
-			return null;
-		}
-
-		@Override
-		public long getItemId(int arg0) {
-			// TODO Auto-generated method stub
-			return arg0;
-		}
-
-		@Override
-		public View getView(int pos, View v, ViewGroup group) {
-			
-			if (v == null) {
-				TextView temp = (TextView)LayoutInflater.from(getContext()).inflate(R.layout.question_option, null);
-				 v = temp;
-				 v.setOnClickListener(new onOptionClicked());
-			}
-			String string = mOptions[pos];
-			((TextView)v).setText(string);
-			return v;
-		}
-	}
-	
-	class onOptionClicked implements View.OnClickListener {
-
-		@Override
-		public void onClick(View arg0) {
-			
-		}
-		
-	}
-	
 	
 	/**
 	 * 获取题目的回调
