@@ -1,11 +1,14 @@
 package com.houfubao.doctor.view;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ImageSpan;
@@ -35,6 +38,8 @@ public class QuestionMainView extends RelativeLayout {
 	QuestionOptionView mOptionView;
 	TextView mAnalysis;
 	
+	Handler mHandler;
+	
 	Question mQuestion;
 	QuestionManager mQuestionManager;
 	QuestionManager.QuestionResultCallback mCallback = new MyQuestionManager();
@@ -43,6 +48,7 @@ public class QuestionMainView extends RelativeLayout {
 		super(context, null, 0);
 		mQuestionManager = DoctorState.getInstance().getQuestionManager();
 
+		mHandler = new MyHandler(this);
 		initVew(context);
 	}
 	
@@ -64,7 +70,7 @@ public class QuestionMainView extends RelativeLayout {
 		mTitle = (TextView)rootView.findViewById(R.id.question_title);
 		mOptionView = (QuestionOptionView)rootView.findViewById(R.id.question_option);
 		mAnalysis = (TextView)findViewById(R.id.question_anlaysis);	
-		
+		mOptionView.setCallbackHandler(mHandler);
 
 	}
 	
@@ -100,6 +106,40 @@ public class QuestionMainView extends RelativeLayout {
 	  
     public int getOrder() {
     	return mOrder;
+    }
+    
+    private void onOptionClicked(int optionpos) {
+    	
+    }
+    
+    //*
+    static final int MSG_ID_ON_OPTION_CLICKED = 1;
+    
+    static class MyHandler extends Handler {
+    	WeakReference<QuestionMainView> mQVReference;
+    	
+    	public MyHandler (QuestionMainView qmv) {
+    		mQVReference = new WeakReference<QuestionMainView>(qmv);
+    	}
+
+		@Override
+		public void handleMessage(Message msg) {
+			QuestionMainView qView = mQVReference.get();
+			if (qView == null) {
+				return;
+			}
+			
+			switch (msg.what) {
+			case MSG_ID_ON_OPTION_CLICKED:
+				qView.onOptionClicked(msg.arg1);
+				break;
+
+			default:
+				break;
+			}
+			super.handleMessage(msg);
+		}
+ 
     }
 
     

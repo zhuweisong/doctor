@@ -4,13 +4,15 @@ package com.houfubao.doctor.view;
 import com.houfubao.doctor.R;
 import com.houfubao.doctor.logic.main.DoctorConst;
 import com.houfubao.doctor.logic.utils.QLog;
-
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -18,12 +20,14 @@ import android.widget.TextView;
 public class QuestionOptionView extends LinearLayout {
 
 	private static final String TAG = "QuestionOption";
-	private  int mWidth = 0;
-
-	OptionAdapter mAdapter = new OptionAdapter();
-	
-	
+	private OptionAdapter mAdapter = new OptionAdapter();
 	private MyDataSetObserver myDataSetObserver = new MyDataSetObserver();
+	private Handler mHandler;
+	private static final int mResId1[] = {
+			R.drawable.jiakao_practise_a_n_day,R.drawable.jiakao_practise_b_n_day,
+			R.drawable.jiakao_practise_c_n_day,R.drawable.jiakao_practise_d_n_day,
+			R.drawable.jiakao_practise_e_n_day,R.drawable.jiakao_practise_f_n_day
+		};
 
 	public QuestionOptionView(Context context) {
 		this(context, null, 0);
@@ -37,10 +41,15 @@ public class QuestionOptionView extends LinearLayout {
 		super(context, attrs, defStyle);
 		setOrientation(LinearLayout.VERTICAL);
 		mAdapter.registerDataSetObserver(myDataSetObserver);
+		
 	}
 	
 	void setOption(String options) {
 		mAdapter.updateOptions(options);
+	}
+	
+	void setCallbackHandler(Handler handler) {
+		mHandler = handler;
 	}
 
 	@Override
@@ -95,6 +104,8 @@ public class QuestionOptionView extends LinearLayout {
 			addView(newView, lp);
 		}
 	}
+	
+
 
 	/**
 	 * 答案选项 
@@ -132,14 +143,26 @@ public class QuestionOptionView extends LinearLayout {
 
 		@Override
 		public View getView(int pos, View v, ViewGroup group) {
-			
+			ViewHolder vh = null;
 			if (v == null) {
-				TextView temp = (TextView)LayoutInflater.from(getContext()).inflate(R.layout.question_option, null);
-				 v = temp;
-				 v.setOnClickListener(new onOptionClicked());
+				vh = new ViewHolder();
+				v = (ViewGroup)LayoutInflater.from(getContext()).inflate(R.layout.question_option, null);
+				v.setTag(vh);
+				v.setOnClickListener(new onOptionClicked());
+			}else {
+				vh = (ViewHolder)v.getTag();
 			}
+			
+			vh.object1 = pos;
+			
+			//Text
 			String string = mOptions[pos];
-			((TextView)v).setText(string);
+			TextView textView = (TextView)(vh.get(v, R.id.option_text));
+			textView.setText(string);
+
+			//Image
+			ImageView imageView = (ImageView)(vh.get(v, R.id.option_image));
+			imageView.setImageResource(mResId1[pos]);
 			return v;
 		}
 	}
@@ -147,8 +170,12 @@ public class QuestionOptionView extends LinearLayout {
 	class onOptionClicked implements View.OnClickListener {
 
 		@Override
-		public void onClick(View arg0) {
+		public void onClick(View v) {
+			ViewHolder vh = (ViewHolder)v.getTag();
+			int pos = (Integer)vh.object1;
+			ImageView imageView = (ImageView)(vh.get(v, R.id.option_image));
 			
+			mHandler.obtainMessage(QuestionMainView.MSG_ID_ON_OPTION_CLICKED, pos).sendToTarget();
 		}
 		
 	}
