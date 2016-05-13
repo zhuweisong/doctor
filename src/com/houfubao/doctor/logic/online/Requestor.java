@@ -17,7 +17,7 @@ public abstract class Requestor {
 	
 	public abstract void getQuestionCount(RequestCallback callback, String tag, int chapterId);
 	
-	
+	public abstract void getChapter(RequestCallback mRequestCallback, String tag, long updateAt);
 	
 	
 	/**
@@ -52,5 +52,7 @@ public abstract class Requestor {
         	mCallbackRefs.remove(hashcode);
 		}
 	}
+
+
 	
 }

@@ -52,8 +52,6 @@ public class QuestionEntry extends BaseEntry {
                     QuestionColumns.COLUMN_UPDATE_AT + BIGINT_TYPE +
                     " )";
     
-
-
     @Override
     public  void createTable(SQLiteDatabase db) {
     	db.execSQL(SQL_CREATE_TABLE);

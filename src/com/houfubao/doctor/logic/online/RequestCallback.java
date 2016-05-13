@@ -13,4 +13,6 @@ public abstract class RequestCallback {
 	public void onGetQuestionCountSucceed(String tag, int chapter, int count, int from) {}
 	public void onGetQuestionCountFailed(String tag,  int chapter) {}
 	
+	public void onGetChapterSucceed(String tag, long updateAt, List<Chapter> chapters, int from){}
+	public void onGetChapterFailed(String tag, long updateAt){}
 }

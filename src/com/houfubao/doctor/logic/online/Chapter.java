@@ -1,40 +1,47 @@
 package com.houfubao.doctor.logic.online;
 
-import java.util.Date;
-
-import com.avos.avoscloud.AVClassName;
-import com.avos.avoscloud.AVObject;
 
 public class Chapter {
 
-	  public static final String QID = "cid";
-	  public static final String TITLE = "title";
-	  public static final String OPTION = "option";
+	private int cid;
+	private int level;
+	private String desc;
+	private int order;
+	private int questionCount;
+	private long updatedAt;
 
-	  public static final String UPDATE_AT = "updatedAt";
-	  
-	  public Chapter() {
-	  }
-
-	public int getCount() {
+	public Chapter(){
 		
-		return 0;
 	}
-	  
-//	  public int getQId() {
-//		  return getInt(QID);
-//	  }
-//	  
-//	  public String getTitle() {
-//		  return getString(TITLE);
-//	  }
-//	  
-//	  public String getOption() {
-//		  return getString(OPTION);
-//	  }
-//
-//	  
-//	  public Date getUpdateAt() {
-//		   return getDate(UPDATE_AT);
-//	  }
+	
+	public Chapter(Chapter chapter) {
+		this.cid = chapter.cid;
+		this.level = chapter.level;
+		this.desc = chapter.desc;
+		this.order = chapter.order;
+		this.questionCount = chapter.questionCount;
+		this.updatedAt = chapter.updatedAt;
+	}
+	
+	@Override
+	public String toString() {
+		return cid + "|" + cid + "|" 
+				+ desc + "|" + order + "|" 
+				+ questionCount + "|" + updatedAt;
+	}
+	
+	public Chapter setCId(int cid){this.cid = cid; return this;}
+	public Chapter setLevel(int level){this.level = level; return this;}
+	public Chapter setDesc(String desc){this.desc = desc; return this;}
+	public Chapter setOrder(int order){this.order = order; return this;}
+	public Chapter setQuestionCount(int questionCount){this.questionCount = questionCount; return this;}
+	public Chapter setUpdateAt(long updatedAt){this.updatedAt = updatedAt; return this;} 
+	
+	public int getCId() {return cid;}
+	public int getLevel() {return level;}
+	public String getDesc() {return desc;}
+	public int getOrder() {return order;}
+	public int getQuestionCount() {return questionCount;}
+	public long getUpdateAt() {return updatedAt;}
+	
 }

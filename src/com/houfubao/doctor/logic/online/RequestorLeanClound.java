@@ -13,6 +13,7 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.CountCallback;
 import com.avos.avoscloud.FindCallback;
+import com.houfubao.doctor.logic.db.ChapterEntry;
 import com.houfubao.doctor.logic.main.DoctorConst;
 import com.houfubao.doctor.logic.utils.QLog;
 import com.houfubao.doctor.logic.utils.VinsonAssertion;
@@ -39,13 +40,7 @@ public class RequestorLeanClound extends Requestor {
 	  public static final String UPDATE_AT = "updatedAt";
 	}
 	
-	static class ChapterColumns { 
-		  public static final String CID = "cid";
-		  public static final String LEFT = "level";
-		  public static final String DESC = "desc";
-		  public static final String ORDER = "iOrder";
-		  public static final String UPDATE_AT = "updatedAt";
-		}
+
 	  
 	public void init(Context context) {
 	    AVOSCloud.setDebugLogEnabled(true);
@@ -62,7 +57,7 @@ public class RequestorLeanClound extends Requestor {
 		QLog.e(TAG, "getQuestionCount ");
 	    AVQuery<AVObject> query = new AVQuery<AVObject>("question");
 	    if (chapterId > 0) {
-	    	query.whereEqualTo(ChapterColumns.ORDER, chapterId);
+	    	query.whereEqualTo(ChapterEntry.ChapterColumns.COLUMN_ORDER, chapterId);
 	    }
 	    String callbackTag = owner + DoctorConst.SEPRATOR + tag + DoctorConst.SEPRATOR + chapterId;
 	    query.countInBackground(new MyCountCallback(callbackTag));
@@ -170,8 +165,73 @@ public class RequestorLeanClound extends Requestor {
 			}
 		}
     }
+
+	@Override
+	public void getChapter(RequestCallback callback, String tag, long updateAt) {
+
+		String owner = getSubScriberKey(callback);
+		if (owner == null) {
+			return;
+		}
+		QLog.e(TAG, "getChapter ");
+	    AVQuery<AVObject> query = new AVQuery<AVObject>("chapter");
+	    query.whereGreaterThan(ChapterEntry.ChapterColumns.COLUMN_UPDATE_AT, updateAt);
+
+	    String callbackTag = owner + DoctorConst.SEPRATOR + tag 
+	    			+ DoctorConst.SEPRATOR + updateAt;
+
+	    query.findInBackground(new MyFindChapterCallback(callbackTag));
+	}
 	
-	
+	/**
+	 * 查询章节列表回调接口
+	 */
+	public class MyFindChapterCallback extends FindCallback<AVObject> {
+		String mTag;
+		public MyFindChapterCallback(String tag) {
+			mTag = tag;
+		}
+		
+		@Override
+		public void done(List<AVObject> list, AVException e) {
+			String[] extra = mTag.split(DoctorConst.SEPRATOR);
+			String ownerId = extra[0];
+			RequestCallback callback = getCallbacker(ownerId);
+			if (callback == null) {
+				QLog.e(TAG, "handle MyFindChapterCallback is error!!!");
+				return;
+			}
+			
+			String tag = extra[1];
+		    long maxUpdateAt = Long.parseLong(extra[2]);
+			if (e == null) {
+
+				List<Chapter> ql = new ArrayList<Chapter>();
+				for (AVObject avObject : list) {
+					Chapter q = new Chapter();
+					q.setCId(avObject.getInt(ChapterEntry.ChapterColumns.COLUMN_CID));
+					q.setLevel(avObject.getInt(ChapterEntry.ChapterColumns.COLUMN_LEVEL));
+					q.setDesc(avObject.getString(ChapterEntry.ChapterColumns.COLUMN_DESC));
+					q.setOrder(avObject.getInt(ChapterEntry.ChapterColumns.COLUMN_ORDER));
+					q.setQuestionCount(avObject.getInt(ChapterEntry.ChapterColumns.COLUMN_QUESTION_COUNT));
+	                long updatedAt = avObject.getUpdatedAt().getTime();
+					q.setUpdateAt(updatedAt);
+					ql.add(q);
+	                
+					if (updatedAt > maxUpdateAt) {
+						maxUpdateAt = updatedAt;
+					}
+	                Log.i(TAG, "getQuestions:" + q.toString());
+				}
+
+			    callback.onGetChapterSucceed(tag, maxUpdateAt, ql, DoctorConst.FROM_NETWORK);
+			}
+			else {
+				e.printStackTrace();
+				callback.onGetChapterFailed(ownerId, maxUpdateAt);
+			}
+		}
+	}
 }
 
 

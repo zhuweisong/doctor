@@ -133,8 +133,8 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
 	  	String ownerId = callback.getOwnerId();
 	  	
 	  	Chapter chapter = mChapterCache.get(chapterId);
-	  	if (chapter != null && chapter.getCount()>0) {
-	  		mRequestCallback.onGetQuestionCountSucceed(ownerId, chapterId, chapter.getCount(), DoctorConst.FROM_SELF);
+	  	if (chapter != null && chapter.getQuestionCount()>0) {
+	  		mRequestCallback.onGetQuestionCountSucceed(ownerId, chapterId, chapter.getQuestionCount(), DoctorConst.FROM_SELF);
 	  		return;
 	  	}
 	  	

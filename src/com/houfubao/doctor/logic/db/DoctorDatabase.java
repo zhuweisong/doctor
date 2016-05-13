@@ -2,6 +2,7 @@ package com.houfubao.doctor.logic.db;
 
 import java.util.List;
 
+import com.houfubao.doctor.logic.online.Chapter;
 import com.houfubao.doctor.logic.online.Question;
 import com.houfubao.doctor.logic.utils.QLog;
 
@@ -16,13 +17,14 @@ public final class DoctorDatabase {
 	private FeedReaderDbHelper mDbHelper;
 	
 	private QuestionEntry mQuestion;
-
+	private ChapterEntry mChapter;
 	
 	public DoctorDatabase(Context context) {
 		mContext = context;
 		mDbHelper = new FeedReaderDbHelper(mContext);
 		
 		mQuestion = new QuestionEntry();
+		mChapter = new ChapterEntry();
 	}
 	
 	//For Provider
@@ -42,9 +44,8 @@ public final class DoctorDatabase {
 		@Override
         public void onCreate(SQLiteDatabase db) {
 		   	QLog.i(TAG, "onCreate from :" + db.getVersion());
-		   	
 		   	mQuestion.createTable(db);
-        }
+		   	mChapter.createTable(db);        }
 		
 		@Override
         public void onUpgrade(SQLiteDatabase db, int oldV, int newV) {
@@ -52,6 +53,7 @@ public final class DoctorDatabase {
 		   	QLog.i(TAG, "onUpgrade from " + oldV + " to " + newV);
             for (int version = oldV + 1; version <= newV; version++) {
             	mQuestion.upgradeTo(db, version);
+            	mChapter.upgradeTo(db, version);
             }
         }
     }
@@ -64,5 +66,15 @@ public final class DoctorDatabase {
     void insert(List<Question> list) {
        	SQLiteDatabase db = mDbHelper.getWritableDatabase();
        	mQuestion.insert(db, list);
+    }
+    
+    List<Chapter> queryChapter() {
+       	SQLiteDatabase db = mDbHelper.getReadableDatabase();
+       	return mChapter.query(db);
+    }
+   
+    void insertChapter(List<Chapter> list) {
+       	SQLiteDatabase db = mDbHelper.getWritableDatabase();
+       	mChapter.insert(db, list);
     }
 }
