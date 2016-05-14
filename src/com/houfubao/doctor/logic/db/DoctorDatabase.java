@@ -45,7 +45,8 @@ public final class DoctorDatabase {
         public void onCreate(SQLiteDatabase db) {
 		   	QLog.i(TAG, "onCreate from :" + db.getVersion());
 		   	mQuestion.createTable(db);
-		   	mChapter.createTable(db);        }
+		   	mChapter.createTable(db);        
+		}
 		
 		@Override
         public void onUpgrade(SQLiteDatabase db, int oldV, int newV) {

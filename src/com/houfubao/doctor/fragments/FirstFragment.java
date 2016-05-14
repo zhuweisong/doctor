@@ -8,6 +8,7 @@ import com.houfubao.doctor.OrderTrainingActivity;
 import com.houfubao.doctor.R;
 import com.houfubao.doctor.RandomTrainingActivity;
 import com.houfubao.doctor.RowView;
+import com.houfubao.doctor.logic.utils.QLog;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -25,13 +26,13 @@ import android.widget.ListView;
 /**
  * Created by sevenzhu on 2016/05/08.
  */
-public class ExamingFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class FirstFragment extends Fragment implements AdapterView.OnItemClickListener {
 
 	private ListView mGridView;
 	private ExampleListAdapter mAdapter;
 	
 	private static final List<Sample> SAMPLES = new ArrayList<Sample>();
-	private static final String TAG = "MainActivity";
+	private static final String TAG = "FirstFragment";
 
 	static {
 		SAMPLES.add(new Sample(OrderTrainingActivity.class, R.string.order_training, "", -1));
@@ -41,8 +42,8 @@ public class ExamingFragment extends Fragment implements AdapterView.OnItemClick
 		SAMPLES.add(new Sample(MainTabActivity.class, R.string.function_test, "", -2));
 	}
 
-    public static ExamingFragment instance() {
-        ExamingFragment view = new ExamingFragment();
+    public static FirstFragment instance() {
+        FirstFragment view = new FirstFragment();
 		return view;
 	}
 
@@ -97,7 +98,7 @@ public class ExamingFragment extends Fragment implements AdapterView.OnItemClick
 			} else {
 				rowView = new RowView(getActivity());
 			}
-			Log.i(TAG, "position:" + position);
+
 			rowView.setText(SAMPLES.get(position).txtId);
 			rowView.setSubtext(SAMPLES.get(position).subtext);
 			return rowView;

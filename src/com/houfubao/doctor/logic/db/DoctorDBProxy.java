@@ -31,7 +31,7 @@ public class DoctorDBProxy extends BaseCallBack<DoctorDBProxy.DBProxyResultCallb
 		public void onQueryChapter(String tag, final List<Chapter> questions){}
     }
     
-	private static final String TAG = "AppstoreDBProxy";
+	private static final String TAG = "DoctorDBProxy";
 	private DBUpdateHandler mDBWorkHandler;
 	private DoctorDatabase mdb;
 	
@@ -140,7 +140,7 @@ public class DoctorDBProxy extends BaseCallBack<DoctorDBProxy.DBProxyResultCallb
 				
 			case DB_QUERY_CHAPTER:
 				msgObj.obj1 = mdb.queryChapter();
-				mHandler.obtainMessage(MAIN_THREAD_ON_QUERY_QUESION, msgObj).sendToTarget();
+				mHandler.obtainMessage(MAIN_THREAD_ON_QUERY_CHAPTER, msgObj).sendToTarget();
 				break;
 				
 			case DB_DELETE_CHAPTER:

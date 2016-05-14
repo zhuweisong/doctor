@@ -2,11 +2,10 @@ package com.houfubao.doctor.logic.online;
 
 import java.util.ArrayList;
 import java.util.Date;
+
 import java.util.List;
 
 import android.content.Context;
-import android.util.Log;
-
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.AVObject;
@@ -16,8 +15,6 @@ import com.avos.avoscloud.FindCallback;
 import com.houfubao.doctor.logic.db.ChapterEntry;
 import com.houfubao.doctor.logic.main.DoctorConst;
 import com.houfubao.doctor.logic.utils.QLog;
-import com.houfubao.doctor.logic.utils.VinsonAssertion;
-
 
 /**
  * 
@@ -87,7 +84,7 @@ public class RequestorLeanClound extends Requestor {
 			    callback.onGetQuestionCountSucceed(tag, chapid, count, DoctorConst.FROM_NETWORK);
 			}
 			else {
-				callback.onGetQuestionCountFailed(tag, chapid);
+				callback.onGetQuestionCountFailed(tag, chapid, DoctorConst.FROM_NETWORK);
 			}
 		}
 	}
@@ -154,14 +151,14 @@ public class RequestorLeanClound extends Requestor {
 					q.setPos(avObject.getInt(QuestionColumns.ORDER));
 					ql.add(q);
 	                
-	                Log.i(TAG, "getQuestions:" + q.toString());
+	                QLog.i(TAG, "getQuestions:" + q.toString());
 				}
 
 			    callback.onGetQuestionsSucceed(tag, start, count, ql, DoctorConst.FROM_NETWORK);
 			}
 			else {
 				e.printStackTrace();
-				callback.onGetQuestionsFailed(ownerId, start, count);
+				callback.onGetQuestionsFailed(ownerId, start, count, DoctorConst.FROM_NETWORK);
 			}
 		}
     }
@@ -173,9 +170,9 @@ public class RequestorLeanClound extends Requestor {
 		if (owner == null) {
 			return;
 		}
-		QLog.e(TAG, "getChapter ");
+		QLog.i(TAG, "getChapter ");
 	    AVQuery<AVObject> query = new AVQuery<AVObject>("chapter");
-	    query.whereGreaterThan(ChapterEntry.ChapterColumns.COLUMN_UPDATE_AT, updateAt);
+	    query.whereGreaterThan(ChapterEntry.ChapterColumns.COLUMN_UPDATE_AT, new Date(updateAt));
 
 	    String callbackTag = owner + DoctorConst.SEPRATOR + tag 
 	    			+ DoctorConst.SEPRATOR + updateAt;
@@ -198,7 +195,7 @@ public class RequestorLeanClound extends Requestor {
 			String ownerId = extra[0];
 			RequestCallback callback = getCallbacker(ownerId);
 			if (callback == null) {
-				QLog.e(TAG, "handle MyFindChapterCallback is error!!!");
+				QLog.i(TAG, "handle MyFindChapterCallback is error!!!");
 				return;
 			}
 			
@@ -221,14 +218,14 @@ public class RequestorLeanClound extends Requestor {
 					if (updatedAt > maxUpdateAt) {
 						maxUpdateAt = updatedAt;
 					}
-	                Log.i(TAG, "getQuestions:" + q.toString());
+	                QLog.i(TAG, "getChapters:" + q.toString());
 				}
 
 			    callback.onGetChapterSucceed(tag, maxUpdateAt, ql, DoctorConst.FROM_NETWORK);
 			}
 			else {
 				e.printStackTrace();
-				callback.onGetChapterFailed(ownerId, maxUpdateAt);
+				callback.onGetChapterFailed(ownerId, maxUpdateAt, DoctorConst.FROM_NETWORK);
 			}
 		}
 	}

@@ -3,6 +3,7 @@ package com.houfubao.doctor;
 import java.util.List;
 
 import com.houfubao.doctor.logic.main.DoctorState;
+import com.houfubao.doctor.logic.online.Chapter;
 import com.houfubao.doctor.logic.online.Question;
 import com.houfubao.doctor.logic.online.QuestionManager;
 import com.houfubao.doctor.logic.utils.SimplePool;
@@ -27,6 +28,8 @@ public class OrderTrainingActivity extends Activity {
 	
 	QuestionManager mQuestion;
 	MyQuestionManagerCallback mCallback;
+	
+	List<Chapter> mChapters;
 		 
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +43,7 @@ public class OrderTrainingActivity extends Activity {
 		mCallback = new MyQuestionManagerCallback();
 		mQuestion = DoctorState.getInstance().getQuestionManager();
 		mQuestion.addCallback(mCallback);
-		mQuestion.getQuestionCount(mCallback, -1);
+		mQuestion.getChapterInfo(mCallback);
 		if (savedInstanceState != null) {
 			mPos = savedInstanceState.getInt(Question_Pos, 1);
 		}
@@ -63,7 +66,6 @@ public class OrderTrainingActivity extends Activity {
 	protected void onStop() {
 		super.onStop();
 	}
-
 
 	@Override
 	protected void onResume() {
@@ -99,8 +101,10 @@ public class OrderTrainingActivity extends Activity {
 		}
 
 		public void setQuestionCount(int count) {
-			mTotal = count;
-			notifyDataSetChanged();
+			if (count > 0){
+				mTotal = count;
+				notifyDataSetChanged();
+			}
 		}
 
 		@Override
@@ -136,39 +140,23 @@ public class OrderTrainingActivity extends Activity {
 	class MyQuestionManagerCallback extends QuestionManager.QuestionResultCallback {
 
 		@Override
-		public void onGetQuestionSucceed(int from, int count, List<Question> list) {
-			
-			super.onGetQuestionSucceed(from, count, list);
-		}
-
-		@Override
-		public void onGetQuestionFailed(int from, int count) {
-			
-			super.onGetQuestionFailed(from, count);
-		}
-
-		@Override
 		public void onGetQuestionSucceed(int pos, Question q) {
 			questionMainView.setQuestion(q);
 			super.onGetQuestionSucceed(pos, q);
 		}
 
 		@Override
-		public void onGetQuestionCountSucceed(int chapterId, int count) {
-			mPageAdapter.setQuestionCount(count);
-			super.onGetQuestionCountSucceed(chapterId, count);
+		public void onGetChapterSucceed(List<Chapter> list) {
+			mChapters = list;
+			int total = QuestionManager.calcQuestionCountByChapter(list);
+			mPageAdapter.setQuestionCount(total);
+			super.onGetChapterSucceed(list);
 		}
 
 		@Override
-		public void onGetQuestionCountFailed(int chapterId) {
+		public void onGetChapterFailed() {
 			// TODO Auto-generated method stub
-			super.onGetQuestionCountFailed(chapterId);
+			super.onGetChapterFailed();
 		}
-		
-		
 	}
-	
-
-	
-
 }

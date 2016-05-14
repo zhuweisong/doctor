@@ -11,7 +11,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.SparseArray;
 
-import com.houfubao.doctor.fragments.ExamingFragment;
+import com.houfubao.doctor.fragments.FirstFragment;
 import com.houfubao.doctor.fragments.FourthFragment;
 import com.houfubao.doctor.fragments.SecondFragment;
 import com.houfubao.doctor.fragments.ThirdFragment;
@@ -85,7 +85,7 @@ public class MainTabActivity extends ActionBarActivity implements ViewPager.OnPa
 	private SparseArray<Fragment> mFragments = new SparseArray<Fragment>();
 	
 	static {
-		TABS.add(new MyTAB(ExamingFragment.class, R.string.main_tab_examine,R.mipmap.home_main_icon_n, R.mipmap.home_main_icon_f_n));
+		TABS.add(new MyTAB(FirstFragment.class, R.string.main_tab_examine,R.mipmap.home_main_icon_n, R.mipmap.home_main_icon_f_n));
 		TABS.add(new MyTAB(SecondFragment.class, R.string.main_tab_examine, R.mipmap.home_categry_icon_n, R.mipmap.home_categry_icon_f_n));
 		TABS.add(new MyTAB(ThirdFragment.class, R.string.main_tab_examine, R.mipmap.home_live_icon_n, R.mipmap.home_live_icon_f_n));
 		TABS.add(new MyTAB(FourthFragment.class, R.string.main_tab_mine, R.mipmap.home_mine_icon_n, R.mipmap.home_mine_icon_f_n));

@@ -2,6 +2,8 @@ package com.houfubao.doctor.logic.online;
 
 import java.util.List;
 
+import android.util.SparseArray;
+
 import com.houfubao.doctor.logic.main.BaseCallBack;
 import com.houfubao.doctor.logic.main.DataResultCallbackBase;
 
@@ -19,12 +21,12 @@ public class QuestionManager extends BaseCallBack<QuestionManager.QuestionResult
     	public void onGetQuestionSucceed(int pos, Question q){}
     	public void onGetQuestionFailed(int pos){}
     	
+    	public void onGetChapterSucceed(List<Chapter> list){}
+      	public void onGetChapterFailed(){}
+    	
     	//@override
     	public void onGetQuestionCountSucceed(int chapterId, int count) {}
     	public void onGetQuestionCountFailed(int chapterId) {}
-    	
-    	
-    	public void onGetChapterInfo(List<Chapter> list){}
     }
 
     /**
@@ -47,7 +49,20 @@ public class QuestionManager extends BaseCallBack<QuestionManager.QuestionResult
     /**
      * 获取当前章节所有题目个数,-1表示全部
      */    
-    public void getChapterInfo() {}
+    public void getChapterInfo(QuestionResultCallback callback) {}
 
+    
+    public static int calcQuestionCountByChapter(List<Chapter> chapters) {
+    	if (chapters == null || chapters.size()==0) {
+    		return 0;
+    	}
+    	int total = 0;
+		for (Chapter chapter : chapters) {
+			if (chapter.getLevel() == 1){
+				total += chapter.getQuestionCount();
+			}
+		}
+		return total;
+    }
 }
     	

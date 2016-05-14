@@ -27,6 +27,7 @@ import com.houfubao.doctor.logic.main.DoctorConst;
 import com.houfubao.doctor.logic.main.DoctorState;
 import com.houfubao.doctor.logic.online.Question;
 import com.houfubao.doctor.logic.online.QuestionManager;
+import com.houfubao.doctor.logic.utils.QLog;
 
 public class QuestionMainView extends RelativeLayout {
 	public final static String TAG = "QuestionMainView";
@@ -80,7 +81,7 @@ public class QuestionMainView extends RelativeLayout {
 	}
 	
 	public void setQuestionOrder(int order) {
-		Log.i(TAG, "setQuestionOrder: " + order);
+		QLog.i(TAG, "setQuestionOrder: " + order);
 		mOrder = order;
 		mQuestionManager.addCallback(mCallback);
 		mQuestionManager.getQuestion(mCallback, order);

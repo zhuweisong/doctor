@@ -18,8 +18,12 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.HandlerThread;
 
 public class DoctorState {
@@ -32,6 +36,7 @@ public class DoctorState {
 	private RequestorLeanClound mRequestor;
 	//
 	private HandlerThread mWorkThread;
+	private NetworkReceiver messageReceiver;
 	
 	//网络连接统一注册，然后接口回调
 	public static interface NetworkStateChanged {
@@ -94,12 +99,46 @@ public class DoctorState {
 		
 		//10.
 		loadImageLoaderConfig(sContext2);
+		
+		
+		messageReceiver = new NetworkReceiver();
+		IntentFilter intentConnectivityFilter = new IntentFilter();
+		intentConnectivityFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+		sContext.registerReceiver(messageReceiver, intentConnectivityFilter);
 	}
 	
 	public void onTerminate() {
 		mQuestionManager.terminate();
+		sContext.unregisterReceiver(messageReceiver);
 	}
 	
+	
+	static boolean isConnect() {
+		ConnectivityManager connectivityManager = (ConnectivityManager) sContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+		NetworkInfo wifiNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+		NetworkInfo etherNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_ETHERNET);
+		return (wifiNetInfo!=null && wifiNetInfo.isConnected()) || (etherNetInfo!=null && etherNetInfo.isConnected());
+	}
+	
+	public class NetworkReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+			QLog.e(TAG, "onReceive action: " + action);
+			if (action == null) {
+				return;
+			}
+
+			if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
+				
+				boolean result = isConnect();
+				mQuestionManager.onNetworkStateChanged(result);
+			}
+
+		}
+	}
 	
 	/**
 	 * 在线图片下载的配置

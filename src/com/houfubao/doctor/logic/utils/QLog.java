@@ -34,7 +34,7 @@ public class QLog {
 
 	public static void e(String tag, String msg) {
 		if (DoctorConst.DEBUG) {
-			Log.e(tag,  tag + ": " + msg);
+			Log.e(TAG,  tag + ": " + msg);
 		}
 	}
 	

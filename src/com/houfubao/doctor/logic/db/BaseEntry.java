@@ -2,6 +2,8 @@ package com.houfubao.doctor.logic.db;
 
 import java.util.ArrayList;
 
+import com.houfubao.doctor.logic.utils.QLog;
+
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
@@ -38,7 +40,7 @@ public abstract class BaseEntry {
 
 	protected void execSqlBatch(SQLiteDatabase db, ArrayList<String> sqls) {
 		if (db == null || sqls == null) {
-			Log.e(TAG, "BaseEntry error");
+			QLog.e(TAG, "BaseEntry error");
 			return;
 		}
 		db.beginTransaction();

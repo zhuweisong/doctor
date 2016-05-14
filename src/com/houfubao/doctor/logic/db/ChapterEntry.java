@@ -38,6 +38,7 @@ public class ChapterEntry extends BaseEntry {
     @Override
     public  void createTable(SQLiteDatabase db) {
     	db.execSQL(SQL_CREATE_TABLE);
+    	QLog.i(TAG, "createTable ");
     }
 
     @Override
@@ -104,7 +105,7 @@ public class ChapterEntry extends BaseEntry {
 				cursor.close();
 			}
 		}
-//		QLog.i(TAG, "query chapter: " + start + "|" + count);
+		QLog.i(TAG, "query chapter: " + l.size());
     	return l;
 		
 	}

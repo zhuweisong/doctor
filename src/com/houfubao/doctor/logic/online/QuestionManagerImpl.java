@@ -1,5 +1,8 @@
 package com.houfubao.doctor.logic.online;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.houfubao.doctor.logic.db.DoctorDBProxy;
@@ -21,12 +24,20 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
     private static final int DB_RQUEST_COUNT = 5; //每次从数据库请求的数据量
     private static final int DB_PRELOAD_COUNT = 5; //每次从数据库请求的数据量
     private static final int ALL_CHAPTER = -1;
+    
     private final String KEY_LAST_ORDER = "LAST_QUESTION_ORDER"; //
+    private final String KEY_QUESTION_UPDATEAT = "LAST_QUESTION_ORDER"; //
+    private final String KEY_CHAPTER_UPDATEAT = "KEY_CHAPTER_UPDATEAT"; //
     
-	/** question cache of getAll  */
-    protected SparseArray<Question> mCache = new SparseArray<Question>();
-    protected SparseArray<Chapter> mChapterCache = new SparseArray<Chapter>();
+    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     
+	/** question cache of getAll, order为key  */
+    protected SparseArray<Question> mQuestionACache = new SparseArray<Question>();
+    protected List<Chapter> mChapterCache = new ArrayList<Chapter>();
+    private boolean mHasGotChapterFromNet = false;
+    private boolean mHasGotQuestionFromNet = false;
+    private long mChapterUpdateAt = 0; //章节最后更新时间
+    private long mQuestionUpdateAt = 0; //问题最后更新时间
     
     private SharedPreferences mSharedPreference;
     private int mLastOrder;
@@ -50,13 +61,15 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
        			DoctorConst.SHAREDPREFERENCE_KEY_SET,
        			Context.MODE_PRIVATE |Context.MODE_MULTI_PROCESS);
        	mLastOrder = mSharedPreference.getInt(KEY_LAST_ORDER, 1);
+       	mChapterUpdateAt = mSharedPreference.getLong(KEY_CHAPTER_UPDATEAT, 0);
+       	mQuestionUpdateAt = mSharedPreference.getLong(KEY_QUESTION_UPDATEAT, 0);
        	
     	mRequestCallback = new QuestionRequestCallback();
     	mRequestor.addCallback(mRequestCallback);
     	
     	mDBRequestCallback = new DBRequestCallback();
     	mDbProxy.addCallback(mDBRequestCallback);
-       	mDbProxy.queryQuestion(mDBRequestCallback, TAG, mLastOrder, DB_RQUEST_COUNT);
+       	mDbProxy.queryChapter(mDBRequestCallback, TAG);
        	preloadFromDB(mLastOrder);
 	}
 	
@@ -98,11 +111,11 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
     public void getQuestion(QuestionResultCallback callback, int order) { 
     	String ownerId = callback.getOwnerId();
     	
-    	Question question = mCache.get(order);
+    	Question question = mQuestionACache.get(order);
 		QLog.i(TAG, "get Question:" + order + "|" + (question==null));
     	if (question != null) {
     		Question copy = new Question(question);
-    		mHandler.obtainMessage(REQUEST_QUESTION_POS, DoctorConst.FROM_SELF, 0,  
+    		mHandler.obtainMessage(REQUEST_QUESTION_POS_SUCCEED, DoctorConst.FROM_SELF, 0,  
     				new DoctorStruct.MessageObj(ownerId, copy)).sendToTarget();
     	} else {
         	preloadFromNetwork(ownerId, order);
@@ -120,7 +133,7 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
 	private void preloadFromDB(int curOrder)  {
 		int maxOrder = Math.min(curOrder + DB_PRELOAD_COUNT, mTotal);
 		for (int i = curOrder;i < maxOrder;i++) {
-			if (mCache.get(i)==null) {
+			if (mQuestionACache.get(i)==null) {
 				mDbProxy.queryQuestion(mDBRequestCallback, TAG, i, DB_RQUEST_COUNT);
 				return;
 			}
@@ -141,11 +154,29 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
     	mRequestor.getQuestionCount(mRequestCallback, ownerId, chapterId);
     }
 	
+	@Override
+    public void getChapterInfo(QuestionResultCallback callback) {
+	  	String ownerId = callback.getOwnerId();
+	  	
+		if (mChapterCache.size()>0) {
+			List<Chapter> cpList = new ArrayList<Chapter>(mChapterCache);
+			mRequestCallback.onGetChapterSucceed(ownerId, mChapterUpdateAt, cpList, DoctorConst.FROM_SELF);
+			return;
+		}
+		
+		mRequestor.getChapter(mRequestCallback, ownerId, mChapterUpdateAt);
+    }
 
 	
-	private final static int REQUEST_QUESTION_LIST = _ID + 1;
-	private final static int REQUEST_QUESTION_POS = _ID + 2;
-	private final static int REQUEST_QUESTION_COUNT = _ID + 3;
+	private final static int REQUEST_QUESTION_LIST_SUCCEED = _ID + 1;
+	private final static int REQUEST_QUESTION_LIST_FAILED = _ID + 2;
+	
+	private final static int REQUEST_QUESTION_POS_SUCCEED = _ID + 3;
+	private final static int REQUEST_QUESTION_POS_FAILED = _ID + 4;
+	
+	private final static int REQUEST_CHAPTER_SUCCEED = _ID + 5;
+	private final static int REQUEST_CHAPTER_FAILED = _ID + 6;
+	
 	
     @Override
 	protected void handleSubMessageOnMainThread(Message msg) {
@@ -154,58 +185,62 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
     	int from = msg.arg1;
     	
 		switch (msg.what) {
-		case REQUEST_QUESTION_LIST:
+		case REQUEST_QUESTION_LIST_SUCCEED:
 			List<Question> qs = (List<Question>)msgObj.obj0;
-			handleQuestionListOnMainThread(msgObj.ownerId,
-					msgObj.int1, msgObj.int2, qs, from);
+			handleRequestQuestionListOnMainThread(msgObj.ownerId, msgObj.int1, msgObj.int2, qs, from);
 			break;
 			
-		case REQUEST_QUESTION_POS:
-			handleQuestionPosOnMainThread(msgObj.ownerId, msgObj.int1, (Question)msgObj.obj0, from);
+		case REQUEST_QUESTION_LIST_FAILED:
+			handleQuestionRequestFailedOnMainThread(msgObj.ownerId, msgObj.int1, msgObj.int2);
 			break;
 			
-		case REQUEST_QUESTION_COUNT:
-			handleQuestionCountOnMainThread(msgObj.ownerId, msgObj.int1, msgObj.int2, from);
+		case REQUEST_QUESTION_POS_SUCCEED:
+			handleRequestQuestionPosSucceedOnMainThread(msgObj.ownerId, msgObj.int1, (Question)msgObj.obj0, from);
 			break;
 			
-
+		case REQUEST_QUESTION_POS_FAILED:
+			handleRequestQuestionPosFailedOnMainThread(msgObj.ownerId, msgObj.int1);			
+			break;
+			
+		case REQUEST_CHAPTER_SUCCEED:
+			handleRequestCharpterSucceedOnMainThread(msgObj.ownerId, (Long)msgObj.obj0, (List<Chapter>)msgObj.obj1, from);
+			break;
+			
+		case REQUEST_CHAPTER_FAILED:
+			break;
+			
 		default:
 			break;
 		}
 		super.handleSubMessageOnMainThread(msg);
 	}
     
-    private void handleQuestionPosOnMainThread(String ownerId, int order, Question q, int from) {
+	private void handleRequestQuestionPosSucceedOnMainThread(String ownerId, int order, Question q, int from) {
 		if (from == DoctorConst.FROM_NETWORK) {
-			mCache.put(q.getOrder(), q);
+			mQuestionACache.put(q.getOrder(), q);
 		}
 		
 		QuestionResultCallback callback = getCallbacker(ownerId);
 		if (callback != null ) {
 			callback.onGetQuestionSucceed(order, q);
-		} else {
-			QLog.e(TAG, "handleQuestionPosOnMainThread error" + order);
 		}
 	}
 
-	private void handleQuestionListOnMainThread(String ownerId, 
-    		int start, int count, List<Question> ql, int from) {
+	private void handleRequestQuestionListOnMainThread(String ownerId, int start, int count, List<Question> ql, int from) {
 		if (from == DoctorConst.FROM_NETWORK) {
 			//
 			for (Question q : ql) {
-				mCache.put(q.getOrder(), q);
+				mQuestionACache.put(q.getOrder(), q);
 			}
 			
 			//从网络来的数据，写入数据库
 			mDbProxy.insert(ql);
 		}
 		
-		Question question = mCache.get(start);
+		Question question = mQuestionACache.get(start);
 		QuestionResultCallback callback = getCallbacker(ownerId);
 		if (callback != null && question != null) {
 			callback.onGetQuestionSucceed(start, question);
-		} else {
-			QLog.e(TAG, "handleQuestionListOnMainThread error" + start);
 		}
     }
     
@@ -216,44 +251,84 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
 		QuestionResultCallback callback = getCallbacker(ownerId);
 		if (callback != null ) {
 			callback.onGetQuestionCountSucceed(chapterId, count);
-		} else {
-			QLog.e(TAG, "handleQuestionCountOnMainThread error" + chapterId);
 		}
     }
     
-	@Override
-	public void onNetworkStateChanged(boolean isConnected) {
+    
+    private void handleRequestCharpterSucceedOnMainThread(String ownerId, Long updateAt, List<Chapter> list, int from) {
 
+    	if (from == DoctorConst.FROM_NETWORK) {
+    		mHasGotChapterFromNet = true;
+    		
+    		if (list.size()>0) {
+    			//更新数据
+    			mDbProxy.insertChapter(list);
+    			
+    			//写入preference
+    			mChapterUpdateAt = updateAt;
+    	       	SharedPreferences.Editor editor = mSharedPreference.edit();
+                editor.putLong(KEY_CHAPTER_UPDATEAT, mChapterUpdateAt);
+                editor.apply();
+                
+    			//重新从数据库读入数据
+    			mDbProxy.queryChapter(mDBRequestCallback, ownerId);
+    		}
+
+    		QLog.e(TAG, "handleRequestCharpterSucceedOnMainThread: " + formatter.format(new Date(updateAt)));
+		} 
+    	
+		QuestionResultCallback callback = getCallbacker(ownerId);
+		if (callback != null ) {
+			callback.onGetChapterSucceed(list);
+		}
 	}
+
+	private void handleRequestQuestionPosFailedOnMainThread(String ownerId, int int1) {
+		
+		QuestionResultCallback callback = getCallbacker(ownerId);
+		if (callback != null ) {
+			callback.onGetQuestionFailed(int1);
+		}
+	}
+
+	private void handleQuestionRequestFailedOnMainThread(String ownerId, int int1, int int2) {
+		
+	}
+	
+
 
 	/**
 	 * 从网络返回数据的回调
 	 */
 	class QuestionRequestCallback extends RequestCallback {
+		
+		@Override
 		public void onGetQuestionsSucceed(String ownerId, int start, int count, List<Question> questions, int from) {
-			mHandler.obtainMessage(REQUEST_QUESTION_LIST, from, 0, 
+			mHandler.obtainMessage(REQUEST_QUESTION_LIST_SUCCEED, from, 0, 
 					new DoctorStruct.MessageObj(ownerId, start, count, questions, null))
 					.sendToTarget();
 		}
 		
-		public void onGetQuestionsFailed(String ownerId, int start, int count) {			
-		}
-
 		@Override
-		public void onGetQuestionCountSucceed(String tag, int chaporder, int count, int from) {
-			mHandler.obtainMessage(REQUEST_QUESTION_COUNT, from, 0, 
-					new DoctorStruct.MessageObj(tag, chaporder, count, null, null))
+		public void onGetQuestionsFailed(String ownerId, int start, int count, int from) {
+			mHandler.obtainMessage(REQUEST_QUESTION_LIST_FAILED, from, 0, 
+					new DoctorStruct.MessageObj(ownerId, start, count, null, null))
 					.sendToTarget();
-			super.onGetQuestionCountSucceed(tag, chaporder, count, from);
 		}
-
+		
 		@Override
-		public void onGetQuestionCountFailed(String tag, int chaporder) {
-			// TODO Auto-generated method stub
-			super.onGetQuestionCountFailed(tag, chaporder);
+		public void onGetChapterSucceed(String tag, long updateAt, List<Chapter> chapters, int from){
+			mHandler.obtainMessage(REQUEST_CHAPTER_SUCCEED, from, 0, 
+					new DoctorStruct.MessageObj(tag, 0, 0, updateAt, chapters))
+					.sendToTarget();
 		}
 		
-		
+		@Override
+		public void onGetChapterFailed(String tag, long updateAt, int from){
+			mHandler.obtainMessage(REQUEST_CHAPTER_FAILED, from, 0, 
+					new DoctorStruct.MessageObj(tag, 0, 0, updateAt, null))
+					.sendToTarget();
+		}
 	}
 	
 	/**
@@ -264,20 +339,17 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
 		@Override
 		public void onQueryQuestion(String ownerId, int start, int count, List<Question> ql) {
 			
-			QLog.e(TAG, "onQueryQuestion :" + start + " count:" + count + "|" + ql.size());
+			QLog.e(TAG, "onQueryQuestion from DB :" + start + " count:" + count + "|" + ql.size());
 			
 			for (Question q : ql) {
-				mCache.put(q.getOrder(), q);
+				mQuestionACache.put(q.getOrder(), q);
 			}
 			
-			Question question = mCache.get(start);
+			Question question = mQuestionACache.get(start);
 			QuestionResultCallback callback = getCallbacker(ownerId);
 			if (callback != null && question != null) {
 				callback.onGetQuestionSucceed(start, question);
-			} else {
-				QLog.e(TAG, "handleQuestionListOnMainThread error" + start);
 			}
-			
 			/**
 			 * 判断数据库中取到的数据是否全部已存在，如果不存在，则要在后台拉取数据
 			 */
@@ -289,6 +361,33 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
 			super.onQueryQuestion(ownerId, start, count, ql);
 		}
 		
+		@Override
+		public void onQueryChapter(String tag, final List<Chapter> chapters){
+			QLog.e(TAG, "onQueryChapter from DB :" + chapters.size());
+
+			if (chapters.size() > 0){
+				mTotal = 0;
+				mChapterCache.clear();
+				mChapterCache.addAll(chapters);				
+				for (Chapter chapter : chapters) {
+					if (chapter.getLevel() == 1){
+						mTotal += chapter.getQuestionCount();
+					}
+				}
+			}
+			
+			QuestionResultCallback callback = getCallbacker(tag);
+			if (callback != null) {
+				callback.onGetChapterSucceed(chapters);
+			}
+		}
+	}
+	
+	@Override
+	public void onNetworkStateChanged(boolean isConnected) {
+		if (!mHasGotChapterFromNet) {
+			mRequestor.getChapter(mRequestCallback, TAG, mChapterUpdateAt);
+		}
 	}
 	
 }
