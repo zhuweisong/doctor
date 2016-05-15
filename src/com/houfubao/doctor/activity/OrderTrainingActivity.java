@@ -3,8 +3,6 @@ package com.houfubao.doctor.activity;
 import java.util.List;
 
 import com.houfubao.doctor.R;
-import com.houfubao.doctor.R.id;
-import com.houfubao.doctor.R.layout;
 import com.houfubao.doctor.logic.main.DoctorState;
 import com.houfubao.doctor.logic.online.Chapter;
 import com.houfubao.doctor.logic.online.Question;
@@ -13,15 +11,17 @@ import com.houfubao.doctor.logic.utils.QLog;
 import com.houfubao.doctor.logic.utils.SimplePool;
 import com.houfubao.doctor.view.QuestionMainView;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.SparseArray;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 public class OrderTrainingActivity extends ActionBarActivity {
 	public final static String Question_Pos = "QUESTION_POS";
@@ -68,6 +68,31 @@ public class OrderTrainingActivity extends ActionBarActivity {
         
         mactionBar.setDisplayOptions(0, flags);
         mactionBar.setTitle(R.string.order_training);
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.question_menu, menu);
+        return true;
+    }
+    
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch (item.getItemId()) {
+		case R.id.simple_item2:
+			
+			break;
+			
+		case R.id.simple_item:
+			break;
+			
+
+		default:
+			break;
+		}
+        Toast.makeText(this, "Selected Item: " + item.getTitle(), Toast.LENGTH_SHORT).show();
+        return true;
     }
     
 	@Override

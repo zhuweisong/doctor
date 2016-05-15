@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+   
+    
+    <!-- first fragment -->
     <string name="app_name">医考</string>
     <string name="order_training">"顺序练习"</string>
     <string name="ramdon_training">"随机练习"</string>
@@ -10,17 +12,17 @@
     
     <string name="my_error_question">"我的错题"</string>
     <string name="my_collection_question">"我的收藏"</string>
-    
-        
-    <!-- 题目页 -->
-    <string name="question_analysis_detail">"试题详解"</string>
-    <string name="question_analysis_key">"考点"</string>
-    
-    <!-- 题目页 -->
-    <string name="main_tab_examine">"医考"</string>
-    <string name="main_tab_examine">"医考"</string>
+ 
     <string name="main_tab_examine">"医考"</string>
     <string name="main_tab_mine">"我"</string>
     
-        
+    <!-- 题目页 -->
+    <string name="question_analysis_detail">"试题详解"</string>
+    <string name="question_analysis_key">"考点"</string>
+    <string name="examing_menu_item">考试模式</string>
+    <string name="learning_menu_item">学习模式</string>
+    <string name="action_bar_help">帮助与反馈</string>
+    <string name="action_bar_share">分享</string>
+    <string name="action_bar_add">增加</string>
+              
 </resources>
