@@ -17,6 +17,7 @@ import com.houfubao.doctor.R.id;
 import com.houfubao.doctor.R.layout;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,12 +46,12 @@ public class RowView extends FrameLayout{
     addView(view);
   }
 
-  public void setText(String text) {
-    mTextView.setText(text);
-  }
 
-  public void setText(int resid) {
+  public void setText(int resid, int drawrableId) {
 	  mTextView.setText(resid);
+	  Drawable drawable = getResources().getDrawable(drawrableId);
+	  drawable.setBounds(0, 0, 100, 30);
+	  mTextView.setCompoundDrawables(null, null, null, drawable);
   }
   
   public void setSubtext(String text) {

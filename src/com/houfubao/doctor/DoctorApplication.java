@@ -10,12 +10,8 @@ import com.houfubao.doctor.logic.online.Question;
 import com.houfubao.doctor.logic.utils.QLog;
 
 /**
- * ClassName: VinsonApplication <br/>
- * Function: 系统属性优化<br/>
- * date: 2015年4月8日 下午1:02:13 <br/>
- * 
- * @version
- * @since JDK 1.6
+ * ClassName: DoctorApplication 
+ * sevenzhu
  */
 public class DoctorApplication extends Application {
 

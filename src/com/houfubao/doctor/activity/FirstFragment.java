@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.houfubao.doctor.R;
+import com.houfubao.doctor.R.drawable;
 import com.houfubao.doctor.logic.utils.QLog;
 import com.houfubao.doctor.view.RowView;
 
@@ -17,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
@@ -25,18 +27,22 @@ import android.widget.ListView;
  */
 public class FirstFragment extends Fragment implements AdapterView.OnItemClickListener {
 
-	private ListView mGridView;
+	private GridView mGridView;
 	private ExampleListAdapter mAdapter;
 	
 	private static final List<Sample> SAMPLES = new ArrayList<Sample>();
 	private static final String TAG = "FirstFragment";
 
 	static {
-		SAMPLES.add(new Sample(OrderTrainingActivity.class, R.string.order_training, "", -1));
-		SAMPLES.add(new Sample(RandomTrainingActivity.class, R.string.ramdon_training, "", -2));
-		SAMPLES.add(new Sample(OrderTrainingActivity.class, R.string.special_subject_training, "", -1));
-		SAMPLES.add(new Sample(RandomTrainingActivity.class, R.string.notdon_training, "", -2));
-		SAMPLES.add(new Sample(MainTabActivity.class, R.string.function_test, "", -2));
+		SAMPLES.add(new Sample(OrderTrainingActivity.class, R.string.order_training, "4", R.drawable.rectangle_blue));
+		SAMPLES.add(new Sample(RandomTrainingActivity.class, R.string.ramdon_training, "5", R.drawable.rectangle_blue));
+		SAMPLES.add(new Sample(OrderTrainingActivity.class, R.string.special_subject_training, "6", R.drawable.rectangle_blue));
+		SAMPLES.add(new Sample(RandomTrainingActivity.class, R.string.notdon_training, "7", R.drawable.rectangle_blue));
+		
+		SAMPLES.add(new Sample(OrderTrainingActivity.class, R.string.function_test, "8", R.drawable.rectangle_blue));
+		SAMPLES.add(new Sample(OrderTrainingActivity.class, R.string.function_test, "8", R.drawable.rectangle_blue));
+		SAMPLES.add(new Sample(OrderTrainingActivity.class, R.string.function_test, "8", R.drawable.rectangle_blue));
+		SAMPLES.add(new Sample(OrderTrainingActivity.class, R.string.function_test, "8", R.drawable.rectangle_blue));
 	}
 
     public static FirstFragment instance() {
@@ -46,12 +52,12 @@ public class FirstFragment extends Fragment implements AdapterView.OnItemClickLi
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.examing_fragment, null);
-        mGridView = (ListView)view.findViewById(R.id.main_list_view);
+        View view = inflater.inflate(R.layout.first_fragment, null);
+        mGridView = (GridView)view.findViewById(R.id.main_list_view);
 //      mGridView.setNumColumns(4);
-      mGridView.setOnItemClickListener(this);
-      mAdapter = new ExampleListAdapter();
-      mGridView.setAdapter(mAdapter);
+        mGridView.setOnItemClickListener(this);
+        mAdapter = new ExampleListAdapter();
+        mGridView.setAdapter(mAdapter);
       
         return view;
     }
@@ -96,8 +102,9 @@ public class FirstFragment extends Fragment implements AdapterView.OnItemClickLi
 				rowView = new RowView(getActivity());
 			}
 
-			rowView.setText(SAMPLES.get(position).txtId);
-			rowView.setSubtext(SAMPLES.get(position).subtext);
+			Sample sample = SAMPLES.get(position);
+			rowView.setText(sample.txtId, sample.drawrableId);
+			rowView.setSubtext(sample.subtext);
 			return rowView;
 		}
 
@@ -130,14 +137,14 @@ public class FirstFragment extends Fragment implements AdapterView.OnItemClickLi
 	private static class Sample {
 		public Class<? extends Activity> viewClass;
 		public int txtId;
-		public int resid; //图id
+		public int drawrableId; //图id
 		public String subtext;
 
-		public Sample(Class<? extends Activity> viewClass, int text, String subtext, int id) {
+		public Sample(Class<? extends Activity> viewClass, int text, String subtext, int drawrableId) {
 			this.viewClass = viewClass;
 			this.txtId = text;
 			this.subtext = subtext;
-			this.resid = id;
+			this.drawrableId = drawrableId;
 		}
 	}
 

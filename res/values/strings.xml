@@ -6,7 +6,11 @@
     <string name="ramdon_training">"随机练习"</string>
     <string name="special_subject_training">"专项练习"</string>
     <string name="notdon_training">"未做题"</string>
-    <string name="function_test">"测试"</string>
+    <string name="function_test">"模拟考试"</string>
+    
+    <string name="my_error_question">"我的错题"</string>
+    <string name="my_collection_question">"我的收藏"</string>
+    
         
     <!-- 题目页 -->
     <string name="question_analysis_detail">"试题详解"</string>
