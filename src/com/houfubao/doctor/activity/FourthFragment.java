@@ -1,4 +1,4 @@
-package com.houfubao.doctor.fragments;
+package com.houfubao.doctor.activity;
 
 import com.houfubao.doctor.R;
 

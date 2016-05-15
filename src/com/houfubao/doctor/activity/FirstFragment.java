@@ -1,14 +1,11 @@
-package com.houfubao.doctor.fragments;
+package com.houfubao.doctor.activity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.houfubao.doctor.MainTabActivity;
-import com.houfubao.doctor.OrderTrainingActivity;
 import com.houfubao.doctor.R;
-import com.houfubao.doctor.RandomTrainingActivity;
-import com.houfubao.doctor.RowView;
 import com.houfubao.doctor.logic.utils.QLog;
+import com.houfubao.doctor.view.RowView;
 
 import android.app.Activity;
 import android.content.Intent;

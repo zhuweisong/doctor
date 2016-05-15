@@ -1,4 +1,4 @@
-package com.lhh.apst.library;
+package com.houfubao.doctor.view.tabpager;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

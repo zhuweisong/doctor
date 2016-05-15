@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <com.lhh.apst.library.AdvancedPagerSlidingTabStrip
+    <com.houfubao.doctor.view.tabpager.AdvancedPagerSlidingTabStrip
         android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="55dp"
@@ -10,7 +10,7 @@
         android:layout_alignParentBottom="true"
         android:fillViewport="false"/>
 
-    <com.houfubao.doctor.APSTSViewPager
+    <com.houfubao.doctor.view.tabpager.APSTSViewPager
         android:id="@+id/vp_main"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"

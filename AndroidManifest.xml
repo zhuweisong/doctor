@@ -20,15 +20,15 @@
         android:theme="@style/AppTheme" 
         android:name="com.houfubao.doctor.DoctorApplication">
         <activity
-            android:name="com.houfubao.doctor.MainTabActivity"
+            android:name="com.houfubao.doctor.activity.MainTabActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.houfubao.doctor.OrderTrainingActivity" android:label="@string/order_training" />
-        <activity android:name="com.houfubao.doctor.RandomTrainingActivity" android:label="@string/ramdon_training" />
+        <activity android:name="com.houfubao.doctor.activity.OrderTrainingActivity" android:label="@string/order_training" />
+        <activity android:name="com.houfubao.doctor.activity.RandomTrainingActivity" android:label="@string/ramdon_training" />
         
     </application>
 

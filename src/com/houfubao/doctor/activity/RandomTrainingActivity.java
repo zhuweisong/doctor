@@ -1,4 +1,4 @@
-package com.houfubao.doctor;
+package com.houfubao.doctor.activity;
 
 import android.app.Activity;
 

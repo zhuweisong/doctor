@@ -10,7 +10,11 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.houfubao.doctor;
+package com.houfubao.doctor.view;
+
+import com.houfubao.doctor.R;
+import com.houfubao.doctor.R.id;
+import com.houfubao.doctor.R.layout;
 
 import android.content.Context;
 import android.util.AttributeSet;

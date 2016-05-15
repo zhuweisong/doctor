@@ -1,4 +1,4 @@
-package com.lhh.apst.library;
+package com.houfubao.doctor.view.tabpager;
 
 /**
  * Created by Linhh on 16/3/8.

@@ -1,4 +1,4 @@
-package com.lhh.apst.library;
+package com.houfubao.doctor.view.tabpager;
 
 import android.util.SparseArray;
 import android.view.View;

@@ -1,4 +1,4 @@
-package com.houfubao.doctor.fragments;
+package com.houfubao.doctor.activity;
 
 import com.houfubao.doctor.R;
 
@@ -11,16 +11,16 @@ import android.view.ViewGroup;
 /**
  * Created by linhonghong on 2015/8/11.
  */
-public class SecondFragment extends Fragment {
+public class ThirdFragment  extends Fragment {
 
-    public static SecondFragment instance() {
-        SecondFragment view = new SecondFragment();
+    public static ThirdFragment instance() {
+        ThirdFragment view = new ThirdFragment();
         return view;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.second_fragment, null);
+        View view = inflater.inflate(R.layout.third_fragment, null);
         return view;
     }
 }

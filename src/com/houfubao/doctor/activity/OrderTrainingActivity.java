@@ -1,7 +1,10 @@
-package com.houfubao.doctor;
+package com.houfubao.doctor.activity;
 
 import java.util.List;
 
+import com.houfubao.doctor.R;
+import com.houfubao.doctor.R.id;
+import com.houfubao.doctor.R.layout;
 import com.houfubao.doctor.logic.main.DoctorState;
 import com.houfubao.doctor.logic.online.Chapter;
 import com.houfubao.doctor.logic.online.Question;

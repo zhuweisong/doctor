@@ -1,4 +1,4 @@
-package com.houfubao.doctor;
+package com.houfubao.doctor.activity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,11 +11,13 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.SparseArray;
 
-import com.houfubao.doctor.fragments.FirstFragment;
-import com.houfubao.doctor.fragments.FourthFragment;
-import com.houfubao.doctor.fragments.SecondFragment;
-import com.houfubao.doctor.fragments.ThirdFragment;
-import com.lhh.apst.library.AdvancedPagerSlidingTabStrip;
+import com.houfubao.doctor.R;
+import com.houfubao.doctor.R.id;
+import com.houfubao.doctor.R.layout;
+import com.houfubao.doctor.R.mipmap;
+import com.houfubao.doctor.R.string;
+import com.houfubao.doctor.view.tabpager.APSTSViewPager;
+import com.houfubao.doctor.view.tabpager.AdvancedPagerSlidingTabStrip;
 
 /**
  * Created by sevenzhu on 2016/5/18.
