@@ -124,7 +124,6 @@ public class DoctorDBProxy extends BaseCallBack<DoctorDBProxy.DBProxyResultCallb
 		public void handleMessage(Message msg) {
 			DoctorStruct.MessageObj msgObj = (DoctorStruct.MessageObj)msg.obj; 
 			List<Question> L1 = null;
-			QLog.i(TAG, "AppstoreDBProxy " + msg.what);
 			
 			switch (msg.what) {
 			case DB_QUERY_QUESTION:

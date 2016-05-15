@@ -4,7 +4,9 @@ package com.houfubao.doctor.logic.db;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.houfubao.doctor.logic.db.QuestionEntry.QuestionColumns;
 import com.houfubao.doctor.logic.online.Chapter;
+import com.houfubao.doctor.logic.online.Question;
 import com.houfubao.doctor.logic.utils.QLog;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -20,7 +22,7 @@ public class ChapterEntry extends BaseEntry {
 	  public static final String COLUMN_LEVEL = "level";
 	  public static final String COLUMN_DESC = "desc";
 	  public static final String COLUMN_ORDER = "iOrder";
-	  public static final String COLUMN_QUESTION_COUNT = "ichapterCount";
+	  public static final String COLUMN_QUESTION_COUNT = "iQuestionCount";
 	  public static final String COLUMN_UPDATE_AT = "updatedAt";
     }
     
@@ -110,11 +112,13 @@ public class ChapterEntry extends BaseEntry {
 		
 	}
 	
-	final static String DELETE_SQL = "DELETE FROM " + TABLE_NAME; 
-	
 	public void insert(SQLiteDatabase db, List<Chapter> list) {
+		if (list== null || list.size()==0) {
+			return;
+		}
+		
 		ArrayList<String> sqls = new ArrayList<String>();
-		sqls.add(DELETE_SQL);
+		sqls.add(getDeleteSQL(list));
 		getInsertSQL(sqls, list);
 		
 		execSqlBatch(db, sqls);
@@ -131,7 +135,7 @@ public class ChapterEntry extends BaseEntry {
     
 	private void getInsertSQL(List<String> sqls, List<Chapter> list) {
 		int size = list.size();
-		if (list.size() <= 0) {
+		if (size <= 0) {
 			return;
 		}
 		
@@ -156,5 +160,30 @@ public class ChapterEntry extends BaseEntry {
 			sb.delete(0, sb.length()); //清空
 		}
 	}
+	
+
+	final static String DELETE_SQL = "DELETE FROM " + TABLE_NAME + " WHERE "  
+			+ ChapterColumns.COLUMN_CID + 
+		    " IN ( ";
+
+	private String getDeleteSQL(List<Chapter> list) {
+		int size = list.size();
+		if (list.size() <= 0) {
+			return null;
+		}
+		
+		StringBuilder sb = new StringBuilder(DELETE_SQL);
+		for (int i = 0; i<size; i++) {
+			Chapter question = list.get(i);
+			sb.append(question.getCId());
+			if (i < size-1) {
+				sb.append(",");
+			}else {
+				sb.append(")");
+			}
+		}
+		
+		return sb.toString();
+	}; 
 	
 }

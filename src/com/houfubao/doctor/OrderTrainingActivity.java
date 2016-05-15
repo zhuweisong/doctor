@@ -6,6 +6,7 @@ import com.houfubao.doctor.logic.main.DoctorState;
 import com.houfubao.doctor.logic.online.Chapter;
 import com.houfubao.doctor.logic.online.Question;
 import com.houfubao.doctor.logic.online.QuestionManager;
+import com.houfubao.doctor.logic.utils.QLog;
 import com.houfubao.doctor.logic.utils.SimplePool;
 import com.houfubao.doctor.view.QuestionMainView;
 
@@ -19,6 +20,8 @@ import android.view.ViewGroup;
 
 public class OrderTrainingActivity extends Activity {
 	public final static String Question_Pos = "QUESTION_POS";
+
+	public static final String TAG = "OrderTrainingActivity";
 
 	int mPos = 1;
 	QuestionMainView questionMainView;
@@ -102,6 +105,7 @@ public class OrderTrainingActivity extends Activity {
 
 		public void setQuestionCount(int count) {
 			if (count > 0){
+				QLog.i(TAG, "OrderTrainingActivity setQuestionCount " + count);
 				mTotal = count;
 				notifyDataSetChanged();
 			}
@@ -149,6 +153,7 @@ public class OrderTrainingActivity extends Activity {
 		public void onGetChapterSucceed(List<Chapter> list) {
 			mChapters = list;
 			int total = QuestionManager.calcQuestionCountByChapter(list);
+			QLog.i(TAG, "onGetChapterSucceed " + list.size() + "|" + total);
 			mPageAdapter.setQuestionCount(total);
 			super.onGetChapterSucceed(list);
 		}
