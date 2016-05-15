@@ -17,11 +17,13 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class OrderTrainingActivity extends Activity {
+public class OrderTrainingActivity extends ActionBarActivity {
 	public final static String Question_Pos = "QUESTION_POS";
 
 	public static final String TAG = "OrderTrainingActivity";
@@ -41,20 +43,32 @@ public class OrderTrainingActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.question_activity);
-		ViewGroup group = (ViewGroup)findViewById(R.id.question_container);
-		mPager = (ViewPager)findViewById(R.id.question_viewpager);
-		mPageAdapter = new MyQuestionPageAdapter();
-		mPager.setAdapter(mPageAdapter);
-				
+		if (savedInstanceState != null) {
+			mPos = savedInstanceState.getInt(Question_Pos, 1);
+		}
+		
 		mCallback = new MyQuestionManagerCallback();
 		mQuestion = DoctorState.getInstance().getQuestionManager();
 		mQuestion.addCallback(mCallback);
 		mQuestion.getChapterInfo(mCallback);
-		if (savedInstanceState != null) {
-			mPos = savedInstanceState.getInt(Question_Pos, 1);
-		}
+
+		initView();
+		initActionBar();
 	}
   
+    private void initView() {
+		mPager = (ViewPager)findViewById(R.id.question_viewpager);
+		mPageAdapter = new MyQuestionPageAdapter();
+		mPager.setAdapter(mPageAdapter);
+    }
+    
+    private void initActionBar() {
+    	ActionBar mactionBar = getSupportActionBar();
+        int flags = ActionBar.DISPLAY_SHOW_HOME ;
+        
+        mactionBar.setDisplayOptions(0, flags);
+        mactionBar.setTitle(R.string.order_training);
+    }
     
 	@Override
 	protected void onDestroy() {

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">doctor</string>
-    <string name="order_training">"有序练习"</string>
+    <string name="app_name">医考</string>
+    <string name="order_training">"顺序练习"</string>
     <string name="ramdon_training">"随机练习"</string>
     <string name="special_subject_training">"专项练习"</string>
     <string name="notdon_training">"未做题"</string>

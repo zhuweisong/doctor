@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.SparseArray;
 
@@ -27,21 +28,22 @@ public class MainTabActivity extends ActionBarActivity implements ViewPager.OnPa
 
     public AdvancedPagerSlidingTabStrip mAPSTS;
     public APSTSViewPager mVP;
+    ActionBar mactionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_icon_tab);
-        findViews();
-        init();
+        
+        initActionBar();
+        initView();
     }
 
-    private void findViews(){
+    private void initView(){
         mAPSTS = (AdvancedPagerSlidingTabStrip)findViewById(R.id.tabs);
         mVP = (APSTSViewPager)findViewById(R.id.vp_main);
-    }
+        
 
-    private void init(){
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
         mVP.setAdapter(new FragmentAdapter(getSupportFragmentManager()));
         mVP.setOffscreenPageLimit(adapter.getCount());
@@ -50,6 +52,14 @@ public class MainTabActivity extends ActionBarActivity implements ViewPager.OnPa
         mVP.setCurrentItem(0);
 //        mAPSTS.showDot(VIEW_FIRST,"99+");
         adapter.notifyDataSetChanged();
+    }
+    
+    private void initActionBar() {
+    	mactionBar = getSupportActionBar();
+        int flags = ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME ;
+        
+        mactionBar.setDisplayOptions(0, flags);
+        mactionBar.setTitle(R.string.app_name);
     }
 
     @Override

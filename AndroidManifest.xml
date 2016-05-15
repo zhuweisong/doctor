@@ -27,7 +27,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.houfubao.doctor.activity.OrderTrainingActivity" android:label="@string/order_training" />
+        <activity 
+            android:name="com.houfubao.doctor.activity.OrderTrainingActivity" 
+            android:label="@string/order_training" 
+            android:parentActivityName="com.houfubao.doctor.activity.MainTabActivity"
+            />
         <activity android:name="com.houfubao.doctor.activity.RandomTrainingActivity" android:label="@string/ramdon_training" />
         
     </application>
