@@ -11,13 +11,20 @@ import com.houfubao.doctor.logic.utils.QLog;
 import com.houfubao.doctor.logic.utils.SimplePool;
 import com.houfubao.doctor.view.QuestionMainView;
 
+import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.AttributeSet;
 import android.util.SparseArray;
+import android.view.InflateException;
+import android.view.LayoutInflater;
+import android.view.LayoutInflater.Factory;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,34 +71,70 @@ public class OrderTrainingActivity extends ActionBarActivity {
     
     private void initActionBar() {
     	ActionBar mactionBar = getSupportActionBar();
-        int flags = ActionBar.DISPLAY_SHOW_HOME ;
-        
-        mactionBar.setDisplayOptions(0, flags);
+    	mactionBar.setDisplayShowTitleEnabled(true);
+    	mactionBar.setDisplayHomeAsUpEnabled(true);
+    	mactionBar.setDisplayShowHomeEnabled(false);
         mactionBar.setTitle(R.string.order_training);
     }
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.question_menu, menu);
-        return true;
+//        
+//        MenuInflater inflater = getMenuInflater();
+//
+//        getLayoutInflater().setFactory(new Factory() {
+//
+//			@Override
+//			public View onCreateView(String name, Context context, AttributeSet attrs) {
+//				System.out.println(name);
+//				if (name.equalsIgnoreCase("com.android.internal.view.menu.IconMenuItemView")
+//					      || name.equalsIgnoreCase("com.android.internal.view.menu.ActionMenuItemView"))
+//					    {
+//					     try
+//					     {
+//					      LayoutInflater f = getLayoutInflater();
+//					       View view = f.createView(name, null, attrs);
+//					      if (view instanceof TextView){
+//					    	  view.setTextColor(Color.GREEN);
+//					      }
+//					      return view;
+//					     } catch (InflateException e)
+//					     {
+//					    	 e.printStackTrace();
+//					     } catch (ClassNotFoundException e)
+//					     {
+//					    	 e.printStackTrace();
+//					     }
+//					    }
+//					    return null;
+//
+//			}
+//        	
+//        });
+
+        return super.onCreateOptionsMenu(menu);
+
     }
     
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        Toast.makeText(this, "Selected Item: " + item.getTitle(), Toast.LENGTH_SHORT).show();
+        
     	switch (item.getItemId()) {
-		case R.id.simple_item2:
+		case R.id.examing_item:
 			
 			break;
 			
-		case R.id.simple_item:
+		case R.id.learning_item:
 			break;
 			
 
 		default:
-			break;
+			return super.onOptionsItemSelected(item);
 		}
-        Toast.makeText(this, "Selected Item: " + item.getTitle(), Toast.LENGTH_SHORT).show();
         return true;
     }
     
