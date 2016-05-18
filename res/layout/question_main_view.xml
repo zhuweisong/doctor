@@ -16,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/question_main_font"
-        android:lineSpacingMultiplier="1.2"        
+        android:lineSpacingMultiplier="1.2" 
         />
 
     <com.houfubao.doctor.view.QuestionOptionView 

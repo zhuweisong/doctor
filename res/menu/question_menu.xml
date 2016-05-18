@@ -18,11 +18,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto" >
 
     <item
-        android:id="@+id/simple_item"
+        android:id="@+id/examing_item"
         android:title="@string/examing_menu_item"
         app:showAsAction="ifRoom"/>
     <item
-        android:id="@+id/simple_item2"
+        android:id="@+id/learning_item"
         android:title="@string/learning_menu_item"
         app:showAsAction="ifRoom"/>
     <item

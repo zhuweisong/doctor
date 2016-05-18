@@ -10,6 +10,7 @@ public class ViewHolder {
 	public ViewHolder(Object o) {
 		object1 = o;
 	}
+	
 	public Object object1;
 	SparseArray<View> vArray = new SparseArray<View>();
 	

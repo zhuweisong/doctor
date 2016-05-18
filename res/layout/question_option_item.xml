@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/option_item_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="12dp"
     android:paddingLeft="@dimen/option_first_indent"
+    android:background="@drawable/option_backgroud_selector"
     android:paddingTop="12dp" >
 
     <ImageView
-        android:id="@+id/option_image"
+        android:id="@+id/option_item_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
@@ -15,13 +17,12 @@
         />
 
     <TextView
-        android:id="@+id/option_text"
+        android:id="@+id/option_item_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@id/option_image"
-        android:background="@drawable/option_backgroud_selector"
+        android:layout_toRightOf="@id/option_item_image"
         android:textSize="@dimen/question_option_fontsize" />
 
 </RelativeLayout>

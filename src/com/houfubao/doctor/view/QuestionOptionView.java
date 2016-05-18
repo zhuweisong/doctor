@@ -1,11 +1,13 @@
 package com.houfubao.doctor.view;
 
 
+import java.lang.ref.WeakReference;
+
 import com.houfubao.doctor.R;
 import com.houfubao.doctor.logic.main.DoctorConst;
 import com.houfubao.doctor.logic.utils.QLog;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
+import android.graphics.drawable.StateListDrawable;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -19,15 +21,29 @@ import android.widget.TextView;
 
 public class QuestionOptionView extends LinearLayout {
 
+	private static final int mResId1[] = {
+		R.drawable.jiakao_practise_a_n_day,R.drawable.jiakao_practise_b_n_day,
+		R.drawable.jiakao_practise_c_n_day,R.drawable.jiakao_practise_d_n_day,
+		R.drawable.jiakao_practise_e_n_day,R.drawable.jiakao_practise_f_n_day
+	};
+
+	private static final int mPressedId[] = {
+		R.drawable.jiakao_practise_a_s_day,R.drawable.jiakao_practise_b_s_day,
+		R.drawable.jiakao_practise_c_s_day,R.drawable.jiakao_practise_d_s_day,
+		R.drawable.jiakao_practise_e_s_day,R.drawable.jiakao_practise_f_s_day
+		};
+	
+	private static final String Answer[] = {"A","B","C","D","E","F"};
+
+	interface OptionClickCallback {
+		void onOptionClick(boolean isRight);
+	}
+	
 	private static final String TAG = "QuestionOption";
 	private OptionAdapter mAdapter = new OptionAdapter();
 	private MyDataSetObserver myDataSetObserver = new MyDataSetObserver();
-	private Handler mHandler;
-	private static final int mResId1[] = {
-			R.drawable.jiakao_practise_a_n_day,R.drawable.jiakao_practise_b_n_day,
-			R.drawable.jiakao_practise_c_n_day,R.drawable.jiakao_practise_d_n_day,
-			R.drawable.jiakao_practise_e_n_day,R.drawable.jiakao_practise_f_n_day
-		};
+	private String mAnswer;
+	private WeakReference<OptionClickCallback> mCallbackReference;
 
 	public QuestionOptionView(Context context) {
 		this(context, null, 0);
@@ -44,12 +60,13 @@ public class QuestionOptionView extends LinearLayout {
 		
 	}
 	
-	void setOption(String options) {
-		mAdapter.updateOptions(options);
+	void setOptionCallback(OptionClickCallback callback) {
+		mCallbackReference = new WeakReference<QuestionOptionView.OptionClickCallback>(callback);
 	}
 	
-	void setCallbackHandler(Handler handler) {
-		mHandler = handler;
+	void setOption(String options, String answer) {
+		mAdapter.updateOptions(options);
+		mAnswer = answer;
 	}
 
 	@Override
@@ -144,25 +161,26 @@ public class QuestionOptionView extends LinearLayout {
 		@Override
 		public View getView(int pos, View v, ViewGroup group) {
 			ViewHolder vh = null;
-			if (v == null) {
-				vh = new ViewHolder();
-				v = (ViewGroup)LayoutInflater.from(getContext()).inflate(R.layout.question_option, null);
-				v.setTag(vh);
-				v.setOnClickListener(new onOptionClicked());
-			}else {
-				vh = (ViewHolder)v.getTag();
-			}
-			
+
+			vh = new ViewHolder();
 			vh.object1 = pos;
+			v = (ViewGroup)LayoutInflater.from(getContext()).inflate(R.layout.question_option_item, null);
+			v.setTag(vh);
+			v.setOnClickListener(new onOptionClicked());
 			
 			//Text
 			String string = mOptions[pos];
-			TextView textView = (TextView)(vh.get(v, R.id.option_text));
+			TextView textView = (TextView)(vh.get(v, R.id.option_item_text));
 			textView.setText(string);
-
-			//Image
-			ImageView imageView = (ImageView)(vh.get(v, R.id.option_image));
-			imageView.setImageResource(mResId1[pos]);
+			
+			//图片
+			StateListDrawable stalistDrawable = new StateListDrawable();
+			ImageView imageView = (ImageView)(vh.get(v, R.id.option_item_image));
+			int pressed = android.R.attr.state_pressed;
+			stalistDrawable.addState(new int []{pressed}, getResources().getDrawable(mPressedId[pos]));
+			stalistDrawable.addState(new int []{-pressed}, getResources().getDrawable(mResId1[pos]));
+			imageView.setBackground(stalistDrawable);
+				
 			return v;
 		}
 	}
@@ -172,11 +190,33 @@ public class QuestionOptionView extends LinearLayout {
 		@Override
 		public void onClick(View v) {
 			ViewHolder vh = (ViewHolder)v.getTag();
-			int pos = (Integer)vh.object1;
-			ImageView imageView = (ImageView)(vh.get(v, R.id.option_image));
+
+			int count = getChildCount();
+			for(int i = 0; i<count; i++) {
+				ViewGroup vg = (ViewGroup)getChildAt(i);
+				vg.setClickable(false);
+				
+				String selectedAnswer = Answer[i];
+				boolean isRight = selectedAnswer.equals(mAnswer);
+				if (isRight) {
+					ImageView imageView = (ImageView)(vg.findViewById(R.id.option_item_image));	
+					imageView.setImageResource(R.drawable.ic_right);
+				}
+			}
 			
-			mHandler.obtainMessage(QuestionMainView.MSG_ID_ON_OPTION_CLICKED, pos).sendToTarget();
+			ImageView imageView = (ImageView)(vh.get(v, R.id.option_item_image));			
+			int pos = (Integer)vh.object1;
+			String selectedAnswer = Answer[pos];
+			boolean isRight = selectedAnswer.equals(mAnswer);
+			imageView.setImageResource(isRight? R.drawable.ic_right : R.drawable.ic_error);
+			
+			OptionClickCallback callback = mCallbackReference.get();
+			if (callback != null) {
+				callback.onOptionClick(isRight);
+			}
 		}
 		
 	}
+	
+
 }

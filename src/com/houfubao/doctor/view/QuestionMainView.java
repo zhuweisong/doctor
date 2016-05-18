@@ -4,8 +4,6 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.FontMetricsInt;
@@ -16,24 +14,19 @@ import android.os.Message;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ImageSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.houfubao.doctor.R;
-import com.houfubao.doctor.logic.main.DoctorConst;
 import com.houfubao.doctor.logic.main.DoctorState;
 import com.houfubao.doctor.logic.online.Question;
 import com.houfubao.doctor.logic.online.QuestionManager;
 import com.houfubao.doctor.logic.utils.QLog;
 
-public class QuestionMainView extends RelativeLayout {
+public class QuestionMainView extends RelativeLayout implements QuestionOptionView.OptionClickCallback {
 	public final static String TAG = "QuestionMainView";
 
 	int mOrder;
@@ -70,15 +63,12 @@ public class QuestionMainView extends RelativeLayout {
 	}
 
 	void initVew(Context context) {
-		View rootView = LayoutInflater.from(context).inflate(
-				R.layout.question_main_view, this);
-		mSingleOrMulti = (ImageView) rootView
-				.findViewById(R.id.question_single_or_multi);
+		View rootView = LayoutInflater.from(context).inflate(R.layout.question_main_view, this);
+		mSingleOrMulti = (ImageView) rootView.findViewById(R.id.question_single_or_multi);
 		mTitle = (TextView) rootView.findViewById(R.id.question_title);
-		mOptionView = (QuestionOptionView) rootView
-				.findViewById(R.id.question_option);
+		mOptionView = (QuestionOptionView) rootView.findViewById(R.id.question_option);
 		mAnalysis = (TextView) findViewById(R.id.question_anlaysis);
-		mOptionView.setCallbackHandler(mHandler);
+		mOptionView.setOptionCallback(this);
 
 	}
 
@@ -105,7 +95,7 @@ public class QuestionMainView extends RelativeLayout {
 		mTitle.append(mQuestion.getTitle());
 
 		// 答案选项
-		mOptionView.setOption(mQuestion.getOption());
+		mOptionView.setOption(mQuestion.getOption(), mQuestion.getAnswer());
 
 		// 正文
 		mAnalysis.setText(mQuestion.getAnalysis());
@@ -117,7 +107,7 @@ public class QuestionMainView extends RelativeLayout {
 	 * 
 	 * @author KenChung
 	 */
-	public class VerticalImageSpan extends ImageSpan {
+	public static class VerticalImageSpan extends ImageSpan {
 		public VerticalImageSpan(Context context, int resid) {
 			super(context, resid);
 		}
@@ -149,7 +139,6 @@ public class QuestionMainView extends RelativeLayout {
 			canvas.translate(x, transY);
 			b.draw(canvas);
 			canvas.restore();
-
 		}
 	}
 
@@ -216,6 +205,15 @@ public class QuestionMainView extends RelativeLayout {
 			setQuestion(q);
 			super.onGetQuestionSucceed(pos, q);
 		}
+	}
+
+	/**
+	 * 选答案后的回调
+	 */
+	@Override
+	public void onOptionClick(boolean isRight) {
+		
+		
 	}
 
 }
