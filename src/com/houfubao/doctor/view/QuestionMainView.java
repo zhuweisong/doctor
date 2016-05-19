@@ -35,6 +35,7 @@ public class QuestionMainView extends RelativeLayout  {
 
 	private Handler mHandler;
 
+	private String mUserAnswer;
 	private Question mQuestion;
 	private QuestionManager mQuestionManager;
 	private QuestionManager.QuestionResultCallback mCallback = new MyQuestionManager();
@@ -60,7 +61,7 @@ public class QuestionMainView extends RelativeLayout  {
 	private static final String Answer[] = { "A", "B", "C", "D", "E", "F" };
 	
 	static public interface OptionClickCallback {
-		void onOptionClick(boolean isRight, String userAnswer);
+		void onOptionClick(int pos, boolean isRight, String userAnswer);
 	}
 	
 	public QuestionMainView(Context context, OptionClickCallback callback) {
@@ -92,7 +93,7 @@ public class QuestionMainView extends RelativeLayout  {
 
 	}
 
-	public void setQuestion(Question question) {
+	void setQuestion(Question question) {
 		mQuestion = question;
 		updateView(question);
 	}
@@ -103,9 +104,14 @@ public class QuestionMainView extends RelativeLayout  {
 		mQuestionManager.addCallback(mCallback);
 		mQuestionManager.getQuestion(mCallback, order);
 	}
+	
+	public void setUserAnswer(String answer) {
+		mUserAnswer = answer;
+	}
 
 	private void updateView(Question question) {
-
+		boolean isFinishedTheQuestion = (mUserAnswer != null);
+		
 		// mSingleOrMulti
 		VerticalImageSpan imgSpan = new VerticalImageSpan(getContext(),
 				R.drawable.jiakao_practise_danxuanti_day);
@@ -119,27 +125,46 @@ public class QuestionMainView extends RelativeLayout  {
 		mOptionView.removeAllViews();
 		int pos = 0;
 		for (String string : options) {
-			ViewGroup v = (ViewGroup) LayoutInflater.from(getContext()).inflate(R.layout.question_option_item, null);
-			v.setOnClickListener(mOptionClickListener);
-			v.setTag(pos);
+			ViewGroup vg = (ViewGroup) LayoutInflater.from(getContext()).inflate(R.layout.question_option_item, null);
+			vg.setOnClickListener(mOptionClickListener);
+			vg.setTag(pos);
 
 			// Text
-			TextView textView = (TextView) (v.findViewById(R.id.option_item_text));
+			TextView textView = (TextView) (vg.findViewById(R.id.option_item_text));
 			textView.setText(string);
 
 			// 图片
-			StateListDrawable stalistDrawable = new StateListDrawable();
-			ImageView imageView = (ImageView) (v.findViewById(R.id.option_item_image));
-			int pressed = android.R.attr.state_pressed;
-			stalistDrawable.addState(new int[] {pressed}, getResources().getDrawable(mPressedId[pos]));
-			stalistDrawable.addState(new int[] {-pressed}, getResources().getDrawable(mResId1[pos]));
-			imageView.setBackground(stalistDrawable);
-			mOptionView.addView(v);
+			ImageView imageView = (ImageView) (vg.findViewById(R.id.option_item_image));
+			if (isFinishedTheQuestion) { //用户刚才已经做过的题目
+				vg.setClickable(false);
+
+				boolean isRight = string.equals(mQuestion.getAnswer());
+				if (isRight) {
+					//当前答案是正确答案,打上勾
+					imageView.setImageResource(R.drawable.ic_right);
+				}
+				else {
+					//用户回答不是正确答案的选项，打上X
+					if (mUserAnswer.equals(string))
+						imageView.setImageResource(R.drawable.ic_error);
+				}
+			}
+			else {
+				//没有做过的题
+				StateListDrawable stalistDrawable = new StateListDrawable();
+				int pressed = android.R.attr.state_pressed;
+				stalistDrawable.addState(new int[] {pressed}, getResources().getDrawable(mPressedId[pos]));
+				stalistDrawable.addState(new int[] {-pressed}, getResources().getDrawable(mResId1[pos]));
+				imageView.setBackground(stalistDrawable);				
+			}
+
+			mOptionView.addView(vg);
 			pos++;
 		}
 
 		// 正文
 		mAnalysis.setText(mQuestion.getAnalysis());
+		mAnalysis.setVisibility(isFinishedTheQuestion? View.VISIBLE : View.INVISIBLE);
 	}
 
 	
@@ -153,29 +178,30 @@ public class QuestionMainView extends RelativeLayout  {
 		@Override
 		public void onClick(View v) {
 			int pos = (Integer) v.getTag();
-
+			mUserAnswer = Answer[pos];
+			String rightAnswer = mQuestion.getAnswer();
 			int count = mOptionView.getChildCount();
 			for (int i = 0; i < count; i++) {
 				ViewGroup vg = (ViewGroup) mOptionView.getChildAt(i);
+				ImageView imageView = (ImageView) (vg.findViewById(R.id.option_item_image));
 				vg.setClickable(false);
-
-				String selectedAnswer = Answer[i];
-				boolean isRight = selectedAnswer.equals(mQuestion.getAnswer());
+				
+				String current = Answer[i];
+				boolean isRight = current.equals(rightAnswer);
 				if (isRight) {
-					ImageView imageView = (ImageView) (vg.findViewById(R.id.option_item_image));
+					//当前答案是正确答案,打上勾
 					imageView.setImageResource(R.drawable.ic_right);
+				}
+				else {
+					//用户回答不是正确答案的选项，打上X
+					if (mUserAnswer.equals(current))
+						imageView.setImageResource(R.drawable.ic_error);
 				}
 			}
 
-			ImageView imageView = (ImageView) (v.findViewById(R.id.option_item_image));
-
-			String userAnswer = Answer[pos];
-			boolean isRight = userAnswer.equals(mQuestion.getAnswer());
-			imageView.setImageResource(isRight ? R.drawable.ic_right : R.drawable.ic_error);
-
 			OptionClickCallback callback = mCallbackReference.get();
 			if (callback != null) {
-				callback.onOptionClick(isRight, userAnswer);
+				callback.onOptionClick(pos, mUserAnswer.equals(mQuestion.getAnswer()), mUserAnswer);
 			}
 		}
 
@@ -229,4 +255,6 @@ public class QuestionMainView extends RelativeLayout  {
 			super.onGetQuestionSucceed(pos, q);
 		}
 	}
+
+
 }

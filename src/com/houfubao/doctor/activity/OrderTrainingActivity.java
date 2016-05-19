@@ -38,6 +38,7 @@ public class OrderTrainingActivity extends ActionBarActivity implements Question
 	MyQuestionManagerCallback mCallback;
 	
 	List<Chapter> mChapters;
+	SparseArray<String> mUserAnswer = new SparseArray<String>();
 	
 	/**
 	 * 存放用户在本页中已做题目答案
@@ -174,11 +175,8 @@ public class OrderTrainingActivity extends ActionBarActivity implements Question
 	 * 选答案后的回调
 	 */
 	@Override
-	public void onOptionClick(boolean isRight, String userAnswer) {
-		if (isRight) {
-			
-		}
-		
+	public void onOptionClick(int pos, boolean isRight, String userAnswer) {
+		mUserAnswer.put(pos, userAnswer);
 	}
 	
 	class MyQuestionPageAdapter extends PagerAdapter {
@@ -224,6 +222,7 @@ public class OrderTrainingActivity extends ActionBarActivity implements Question
 				view = new QuestionMainView(getBaseContext(), OrderTrainingActivity.this);
 			}
 			view.setQuestionOrder(position+1);
+			view.setUserAnswer(mUserAnswer.get(position+1));
 			container.addView(view);
 			return view;
 		}
@@ -235,12 +234,6 @@ public class OrderTrainingActivity extends ActionBarActivity implements Question
 	 * @author zhuweisong
 	 */
 	class MyQuestionManagerCallback extends QuestionManager.QuestionResultCallback {
-
-		@Override
-		public void onGetQuestionSucceed(int pos, Question q) {
-			questionMainView.setQuestion(q);
-			super.onGetQuestionSucceed(pos, q);
-		}
 
 		@Override
 		public void onGetChapterSucceed(List<Chapter> list) {
