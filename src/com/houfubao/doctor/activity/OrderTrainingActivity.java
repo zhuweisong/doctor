@@ -11,26 +11,19 @@ import com.houfubao.doctor.logic.utils.QLog;
 import com.houfubao.doctor.logic.utils.SimplePool;
 import com.houfubao.doctor.view.QuestionMainView;
 
-import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.util.AttributeSet;
 import android.util.SparseArray;
-import android.view.InflateException;
-import android.view.LayoutInflater;
-import android.view.LayoutInflater.Factory;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-public class OrderTrainingActivity extends ActionBarActivity {
+public class OrderTrainingActivity extends ActionBarActivity implements QuestionMainView.OptionClickCallback {
 	public final static String Question_Pos = "QUESTION_POS";
 
 	public static final String TAG = "OrderTrainingActivity";
@@ -45,6 +38,11 @@ public class OrderTrainingActivity extends ActionBarActivity {
 	MyQuestionManagerCallback mCallback;
 	
 	List<Chapter> mChapters;
+	
+	/**
+	 * 存放用户在本页中已做题目答案
+	 */
+	SparseArray<String> mAnswer = new SparseArray<String>();
 		 
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -172,7 +170,17 @@ public class OrderTrainingActivity extends ActionBarActivity {
 		super.onSaveInstanceState(outState);
 	}
 
-
+	/**
+	 * 选答案后的回调
+	 */
+	@Override
+	public void onOptionClick(boolean isRight, String userAnswer) {
+		if (isRight) {
+			
+		}
+		
+	}
+	
 	class MyQuestionPageAdapter extends PagerAdapter {
 		//数据
 		int mTotal;
@@ -213,7 +221,7 @@ public class OrderTrainingActivity extends ActionBarActivity {
 		public Object instantiateItem(ViewGroup container, int position) {
 			QuestionMainView view = mViewPool.acquire();
 			if (view == null) {
-				view = new QuestionMainView(getBaseContext());
+				view = new QuestionMainView(getBaseContext(), OrderTrainingActivity.this);
 			}
 			view.setQuestionOrder(position+1);
 			container.addView(view);

@@ -1,5 +1,7 @@
 package com.houfubao.doctor.logic.online;
 
+import android.R.integer;
+
 public class Question {
 	@Override
 	public String toString() {
@@ -9,7 +11,7 @@ public class Question {
 	}
 	
 	private int id;
-	private int attr;	
+	private int attr;	//后台带过来的属性
 	private String title;
 	private String option;
 	private String answer;
@@ -18,6 +20,8 @@ public class Question {
 	private String analysis;
 	private long updateAt;
 	private int pos;
+	
+	private int flag; //客户端标记
 	
 	  public Question() {}
 
@@ -44,6 +48,7 @@ public class Question {
 	  public Question setAnalysis(String analysis) {this.analysis = analysis; return this;}
 	  public Question setUpdateAt(long updateAt) {this.updateAt = updateAt; return this; }
 	  public Question setPos(int pos) {this.pos = pos;return this;}
+	  public Question setFlag(int flag) {this.flag = flag;return this;}
 	  
 	  public int getQId() { return id; }
 	  public String getTitle() { return title; }

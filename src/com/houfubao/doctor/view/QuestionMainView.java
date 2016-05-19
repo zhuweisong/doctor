@@ -4,48 +4,69 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Paint.FontMetricsInt;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
+import android.graphics.drawable.StateListDrawable;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.style.ImageSpan;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.houfubao.doctor.R;
+import com.houfubao.doctor.logic.main.DoctorConst;
 import com.houfubao.doctor.logic.main.DoctorState;
 import com.houfubao.doctor.logic.online.Question;
 import com.houfubao.doctor.logic.online.QuestionManager;
 import com.houfubao.doctor.logic.utils.QLog;
 
-public class QuestionMainView extends RelativeLayout implements QuestionOptionView.OptionClickCallback {
+public class QuestionMainView extends RelativeLayout  {
 	public final static String TAG = "QuestionMainView";
 
-	int mOrder;
+	private int mOrder;
 
-	ImageView mSingleOrMulti;
-	TextView mTitle;
-	QuestionOptionView mOptionView;
-	TextView mAnalysis;
+	private TextView mTitle;
+	private LinearLayout mOptionView;
+	private TextView mAnalysis;
 
-	Handler mHandler;
+	private Handler mHandler;
 
-	Question mQuestion;
-	QuestionManager mQuestionManager;
-	QuestionManager.QuestionResultCallback mCallback = new MyQuestionManager();
+	private Question mQuestion;
+	private QuestionManager mQuestionManager;
+	private QuestionManager.QuestionResultCallback mCallback = new MyQuestionManager();
+	private WeakReference<OptionClickCallback> mCallbackReference;
+	private onOptionClicked mOptionClickListener = new onOptionClicked();
 
-	public QuestionMainView(Context context) {
+	private static final int mResId1[] = {
+			R.drawable.jiakao_practise_a_n_day,
+			R.drawable.jiakao_practise_b_n_day,
+			R.drawable.jiakao_practise_c_n_day,
+			R.drawable.jiakao_practise_d_n_day,
+			R.drawable.jiakao_practise_e_n_day,
+			R.drawable.jiakao_practise_f_n_day };
+
+	private static final int mPressedId[] = {
+			R.drawable.jiakao_practise_a_s_day,
+			R.drawable.jiakao_practise_b_s_day,
+			R.drawable.jiakao_practise_c_s_day,
+			R.drawable.jiakao_practise_d_s_day,
+			R.drawable.jiakao_practise_e_s_day,
+			R.drawable.jiakao_practise_f_s_day };
+
+	private static final String Answer[] = { "A", "B", "C", "D", "E", "F" };
+	
+	static public interface OptionClickCallback {
+		void onOptionClick(boolean isRight, String userAnswer);
+	}
+	
+	public QuestionMainView(Context context, OptionClickCallback callback) {
 		super(context, null, 0);
 		mQuestionManager = DoctorState.getInstance().getQuestionManager();
-
+		mCallbackReference = new WeakReference<OptionClickCallback>(callback);
 		mHandler = new MyHandler(this);
 		initVew(context);
 	}
@@ -64,11 +85,10 @@ public class QuestionMainView extends RelativeLayout implements QuestionOptionVi
 
 	void initVew(Context context) {
 		View rootView = LayoutInflater.from(context).inflate(R.layout.question_main_view, this);
-		mSingleOrMulti = (ImageView) rootView.findViewById(R.id.question_single_or_multi);
 		mTitle = (TextView) rootView.findViewById(R.id.question_title);
-		mOptionView = (QuestionOptionView) rootView.findViewById(R.id.question_option);
+		mOptionView = (LinearLayout) rootView.findViewById(R.id.question_option);
 		mAnalysis = (TextView) findViewById(R.id.question_anlaysis);
-		mOptionView.setOptionCallback(this);
+		mAnalysis.setVisibility(View.INVISIBLE);
 
 	}
 
@@ -95,64 +115,73 @@ public class QuestionMainView extends RelativeLayout implements QuestionOptionVi
 		mTitle.append(mQuestion.getTitle());
 
 		// 答案选项
-		mOptionView.setOption(mQuestion.getOption(), mQuestion.getAnswer());
+		String[] options = mQuestion.getOption().split(DoctorConst.DOUBLE_SEPRATOR);
+		mOptionView.removeAllViews();
+		int pos = 0;
+		for (String string : options) {
+			ViewGroup v = (ViewGroup) LayoutInflater.from(getContext()).inflate(R.layout.question_option_item, null);
+			v.setOnClickListener(mOptionClickListener);
+			v.setTag(pos);
+
+			// Text
+			TextView textView = (TextView) (v.findViewById(R.id.option_item_text));
+			textView.setText(string);
+
+			// 图片
+			StateListDrawable stalistDrawable = new StateListDrawable();
+			ImageView imageView = (ImageView) (v.findViewById(R.id.option_item_image));
+			int pressed = android.R.attr.state_pressed;
+			stalistDrawable.addState(new int[] {pressed}, getResources().getDrawable(mPressedId[pos]));
+			stalistDrawable.addState(new int[] {-pressed}, getResources().getDrawable(mResId1[pos]));
+			imageView.setBackground(stalistDrawable);
+			mOptionView.addView(v);
+			pos++;
+		}
 
 		// 正文
 		mAnalysis.setText(mQuestion.getAnalysis());
-
 	}
 
-	/**
-	 * 垂直居中的ImageSpan
-	 * 
-	 * @author KenChung
-	 */
-	public static class VerticalImageSpan extends ImageSpan {
-		public VerticalImageSpan(Context context, int resid) {
-			super(context, resid);
-		}
-
-		public int getSize(Paint paint, CharSequence text, int start, int end, FontMetricsInt fm) {
-			Drawable d = getDrawable();
-			Rect rect = d.getBounds();
-			if (fm != null) {
-				FontMetricsInt fmPaint = paint.getFontMetricsInt();
-				int fontHeight = fmPaint.bottom - fmPaint.top;
-				int drHeight = rect.bottom - rect.top;
-				int top = drHeight / 2 - fontHeight / 4;
-				int bottom = drHeight / 2 + fontHeight / 4;
-				fm.ascent = -bottom;
-				fm.top = -bottom;
-				fm.bottom = top;
-				fm.descent = top;
-			}
-			return rect.right;
-		}
-
-		@Override
-		public void draw(Canvas canvas, CharSequence text, int start, int end,
-				float x, int top, int y, int bottom, Paint paint) {
-			Drawable b = getDrawable();
-			canvas.save();
-			int transY = 0;
-			transY = ((bottom - top) - b.getBounds().bottom) / 2 + top;
-			canvas.translate(x, transY);
-			b.draw(canvas);
-			canvas.restore();
-		}
-	}
-
+	
 	public int getOrder() {
 		return mOrder;
 	}
 
-	private void onOptionClicked(int optionpos) {
+
+	class onOptionClicked implements View.OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			int pos = (Integer) v.getTag();
+
+			int count = mOptionView.getChildCount();
+			for (int i = 0; i < count; i++) {
+				ViewGroup vg = (ViewGroup) mOptionView.getChildAt(i);
+				vg.setClickable(false);
+
+				String selectedAnswer = Answer[i];
+				boolean isRight = selectedAnswer.equals(mQuestion.getAnswer());
+				if (isRight) {
+					ImageView imageView = (ImageView) (vg.findViewById(R.id.option_item_image));
+					imageView.setImageResource(R.drawable.ic_right);
+				}
+			}
+
+			ImageView imageView = (ImageView) (v.findViewById(R.id.option_item_image));
+
+			String userAnswer = Answer[pos];
+			boolean isRight = userAnswer.equals(mQuestion.getAnswer());
+			imageView.setImageResource(isRight ? R.drawable.ic_right : R.drawable.ic_error);
+
+			OptionClickCallback callback = mCallbackReference.get();
+			if (callback != null) {
+				callback.onOptionClick(isRight, userAnswer);
+			}
+		}
 
 	}
 
 	// *
-	static final int MSG_ID_ON_OPTION_CLICKED = 1;
-
 	static class MyHandler extends Handler {
 		WeakReference<QuestionMainView> mQVReference;
 
@@ -168,28 +197,22 @@ public class QuestionMainView extends RelativeLayout implements QuestionOptionVi
 			}
 
 			switch (msg.what) {
-			case MSG_ID_ON_OPTION_CLICKED:
-				qView.onOptionClicked(msg.arg1);
-				break;
-
 			default:
 				break;
 			}
 			super.handleMessage(msg);
 		}
-
 	}
-
+	
 	/**
 	 * 获取题目的回调
-	 * 
+	 *
 	 * @author zhuweisong
 	 */
 	class MyQuestionManager extends QuestionManager.QuestionResultCallback {
 
 		@Override
-		public void onGetQuestionSucceed(int from, int count,
-				List<Question> list) {
+		public void onGetQuestionSucceed(int from, int count, List<Question> list) {
 
 			super.onGetQuestionSucceed(from, count, list);
 		}
@@ -206,14 +229,4 @@ public class QuestionMainView extends RelativeLayout implements QuestionOptionVi
 			super.onGetQuestionSucceed(pos, q);
 		}
 	}
-
-	/**
-	 * 选答案后的回调
-	 */
-	@Override
-	public void onOptionClick(boolean isRight) {
-		
-		
-	}
-
 }

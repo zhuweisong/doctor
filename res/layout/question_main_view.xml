@@ -4,12 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="12dp" >
-    <ImageView
-        android:id="@+id/question_single_or_multi" 
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@null"
-        />
+    
     
     <TextView
         android:id="@+id/question_title"
@@ -19,10 +14,11 @@
         android:lineSpacingMultiplier="1.2" 
         />
 
-    <com.houfubao.doctor.view.QuestionOptionView 
+    <LinearLayout
         android:id="@+id/question_option"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         />
     
     <TextView
