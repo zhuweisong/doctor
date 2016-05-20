@@ -274,7 +274,7 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
     			mDbProxy.queryChapter(mDBRequestCallback, ownerId);
     		}
 
-    		QLog.e(TAG, "handleRequestCharpterSucceedOnMainThread: " + formatter.format(new Date(updateAt)));
+    		QLog.i(TAG, "handleRequestCharpterSucceedOnMainThread: " + formatter.format(new Date(updateAt)));
 		} 
     	
 		QuestionResultCallback callback = getCallbacker(ownerId);
@@ -339,10 +339,10 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
 		@Override
 		public void onQueryQuestion(String ownerId, int start, int count, List<Question> ql) {
 			
-			QLog.e(TAG, "onQueryQuestion from DB :" + start + " count:" + count + "|" + ql.size());
+			QLog.i(TAG, "onQueryQuestion from DB :" + start + " count:" + count + "|" + ql.size());
 			
 			for (Question q : ql) {
-				QLog.e(TAG, "onQueryQuestion from DB 11:" + q.toString());	
+				QLog.i(TAG, "onQueryQuestion from DB 11:" + q.toString());	
 				mQuestionACache.put(q.getOrder(), q);
 			}
 			
@@ -364,7 +364,7 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
 		
 		@Override
 		public void onQueryChapter(String tag, final List<Chapter> chapters){
-			QLog.e(TAG, "onQueryChapter from DB :" + chapters.size());
+			QLog.i(TAG, "onQueryChapter from DB :" + chapters.size());
 
 			if (chapters.size() > 0){
 				mTotal = 0;

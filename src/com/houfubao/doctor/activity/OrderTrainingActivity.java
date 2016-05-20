@@ -180,7 +180,7 @@ public class OrderTrainingActivity extends ActionBarActivity implements Question
 		mUserAnswer.put(pos, userAnswer);
 		QLog.i(TAG, "onOptionClick " + pos + "|" + isRight + "|" + userAnswer);
 		if (isRight) {
-			mPager.setCurrentItem(pos+1, true);
+			mPager.setCurrentItem(pos, true);
 		}
 	}
 	
@@ -226,8 +226,8 @@ public class OrderTrainingActivity extends ActionBarActivity implements Question
 				view = new QuestionMainView(getBaseContext(), OrderTrainingActivity.this);
 			}
 			mView.put(position, view);
-			view.setQuestionOrder(position+1);
-			view.setUserAnswer(mUserAnswer.get(position+1));
+			view.setQuestionOrder(position);
+			view.setUserAnswer(mUserAnswer.get(position));
 			container.addView(view);
 			return view;
 		}

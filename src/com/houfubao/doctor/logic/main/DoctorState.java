@@ -126,7 +126,7 @@ public class DoctorState {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
-			QLog.e(TAG, "onReceive action: " + action);
+			QLog.i(TAG, "onReceive action: " + action);
 			if (action == null) {
 				return;
 			}

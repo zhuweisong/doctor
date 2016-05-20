@@ -107,7 +107,7 @@ public class QuestionMainView extends RelativeLayout  {
 	private void updateView(Question question) {
 		boolean isFinishedTheQuestion = (mUserAnswer != null);
 		
-		QLog.i(TAG, "updateView " + question.getOrder());
+		QLog.i(TAG, "updateView " + question.toString());
 		// mSingleOrMulti
 		int iconRes = question.isMultiChoice()? R.drawable.question_multi_choice : R.drawable.question_single_choice;
 		VerticalImageSpan imgSpan = new VerticalImageSpan(getContext(),iconRes);
@@ -212,8 +212,6 @@ public class QuestionMainView extends RelativeLayout  {
 
 	/**
 	 * 获取题目的回调
-	 *
-	 * @author zhuweisong
 	 */
 	class MyQuestionManager extends QuestionManager.QuestionResultCallback {
 
