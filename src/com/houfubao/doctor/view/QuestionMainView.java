@@ -113,41 +113,30 @@ public class QuestionMainView extends RelativeLayout  {
 		boolean isFinishedTheQuestion = (mUserAnswer != null);
 		
 		// mSingleOrMulti
-		VerticalImageSpan imgSpan = new VerticalImageSpan(getContext(),
-				R.drawable.jiakao_practise_danxuanti_day);
+		int iconRes = question.isMultiChoice()? R.drawable.question_multi_choice : R.drawable.question_single_choice;
+		VerticalImageSpan imgSpan = new VerticalImageSpan(getContext(),iconRes);
 		SpannableString spanString = new SpannableString("icon");
 		spanString.setSpan(imgSpan, 0, 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		mTitle.setText(spanString);
-		mTitle.append(mQuestion.getTitle());
+		mTitle.append(question.getTitle());
 
 		// 答案选项
 		String[] options = mQuestion.getOption().split(DoctorConst.DOUBLE_SEPRATOR);
 		mOptionView.removeAllViews();
+		String rightAnswer = mQuestion.getAnswer();
 		int pos = 0;
-		for (String string : options) {
+		for (String current : options) {
 			ViewGroup vg = (ViewGroup) LayoutInflater.from(getContext()).inflate(R.layout.question_option_item, null);
 			vg.setOnClickListener(mOptionClickListener);
 			vg.setTag(pos);
 
 			// Text
 			TextView textView = (TextView) (vg.findViewById(R.id.option_item_text));
-			textView.setText(string);
+			textView.setText(current);
 
 			// 图片
-			ImageView imageView = (ImageView) (vg.findViewById(R.id.option_item_image));
 			if (isFinishedTheQuestion) { //用户刚才已经做过的题目
-				vg.setClickable(false);
-
-				boolean isRight = string.equals(mQuestion.getAnswer());
-				if (isRight) {
-					//当前答案是正确答案,打上勾
-					imageView.setImageResource(R.drawable.ic_right);
-				}
-				else {
-					//用户回答不是正确答案的选项，打上X
-					if (mUserAnswer.equals(string))
-						imageView.setImageResource(R.drawable.ic_error);
-				}
+				setOptionChoicedStatus(vg, current, rightAnswer);
 			}
 			else {
 				//没有做过的题
@@ -155,6 +144,7 @@ public class QuestionMainView extends RelativeLayout  {
 				int pressed = android.R.attr.state_pressed;
 				stalistDrawable.addState(new int[] {pressed}, getResources().getDrawable(mPressedId[pos]));
 				stalistDrawable.addState(new int[] {-pressed}, getResources().getDrawable(mResId1[pos]));
+				ImageView imageView = (ImageView) (vg.findViewById(R.id.option_item_image));
 				imageView.setBackground(stalistDrawable);				
 			}
 
@@ -171,6 +161,25 @@ public class QuestionMainView extends RelativeLayout  {
 	public int getOrder() {
 		return mOrder;
 	}
+	
+	/**
+	 * 当用户已经做了此题目后，设置其X和勾的状态
+	 */
+	void setOptionChoicedStatus(ViewGroup vg, String current, String rightAnswer) {
+		ImageView imageView = (ImageView) (vg.findViewById(R.id.option_item_image));
+		vg.setClickable(false);
+
+		boolean isRight = current.equals(rightAnswer);
+		if (isRight) {
+			//当前答案是正确答案,打上勾
+			imageView.setImageResource(R.drawable.ic_right);
+		}
+		else {
+			//用户回答不是正确答案的选项，打上X
+			if (mUserAnswer.equals(current))
+				imageView.setImageResource(R.drawable.ic_error);
+		}
+	}
 
 
 	class onOptionClicked implements View.OnClickListener {
@@ -183,20 +192,8 @@ public class QuestionMainView extends RelativeLayout  {
 			int count = mOptionView.getChildCount();
 			for (int i = 0; i < count; i++) {
 				ViewGroup vg = (ViewGroup) mOptionView.getChildAt(i);
-				ImageView imageView = (ImageView) (vg.findViewById(R.id.option_item_image));
-				vg.setClickable(false);
-				
 				String current = Answer[i];
-				boolean isRight = current.equals(rightAnswer);
-				if (isRight) {
-					//当前答案是正确答案,打上勾
-					imageView.setImageResource(R.drawable.ic_right);
-				}
-				else {
-					//用户回答不是正确答案的选项，打上X
-					if (mUserAnswer.equals(current))
-						imageView.setImageResource(R.drawable.ic_error);
-				}
+				setOptionChoicedStatus(vg, current, rightAnswer);
 			}
 
 			OptionClickCallback callback = mCallbackReference.get();
@@ -255,6 +252,4 @@ public class QuestionMainView extends RelativeLayout  {
 			super.onGetQuestionSucceed(pos, q);
 		}
 	}
-
-
 }

@@ -1,8 +1,10 @@
 package com.houfubao.doctor.logic.online;
 
-import android.R.integer;
-
 public class Question {
+	
+	private static final int ATTR_MULTI_CHOICE = 1;
+	private boolean isSetAttr(int f) {return (attr & f)!=0;}
+	
 	@Override
 	public String toString() {
 		return pos + "|" + title + "|" 
@@ -49,15 +51,17 @@ public class Question {
 	  public Question setUpdateAt(long updateAt) {this.updateAt = updateAt; return this; }
 	  public Question setPos(int pos) {this.pos = pos;return this;}
 	  public Question setFlag(int flag) {this.flag = flag;return this;}
+
 	  
 	  public int getQId() { return id; }
 	  public String getTitle() { return title; }
 	  public String getOption() {return option;} 
 	  public String getAnswer() {return answer; }
-	  public int getAttr() { return attr;}	  
+	  public int getAttr() { return attr;}
 	  public int getChapter() {return chapter;}
 	  public String getPicture() {return picture;}
 	  public String getAnalysis() {return analysis;}
 	  public long getUpdateAt() { return updateAt; }
 	  public int getOrder() {return pos;}
+	  public boolean isMultiChoice() {return isSetAttr(ATTR_MULTI_CHOICE);}
 }
