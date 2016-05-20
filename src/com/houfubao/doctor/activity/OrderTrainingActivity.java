@@ -185,7 +185,6 @@ public class OrderTrainingActivity extends ActionBarActivity implements Question
 	class MyQuestionPageAdapter extends PagerAdapter {
 		//数据
 		int mTotal;
-		SparseArray<Question> mQuestions = new SparseArray<Question>();
 		
 		//View
 		SparseArray<QuestionMainView> mView = new SparseArray<QuestionMainView>();
@@ -224,6 +223,7 @@ public class OrderTrainingActivity extends ActionBarActivity implements Question
 			if (view == null) {
 				view = new QuestionMainView(getBaseContext(), OrderTrainingActivity.this);
 			}
+			mView.put(position, view);
 			view.setQuestionOrder(position+1);
 			view.setUserAnswer(mUserAnswer.get(position+1));
 			container.addView(view);

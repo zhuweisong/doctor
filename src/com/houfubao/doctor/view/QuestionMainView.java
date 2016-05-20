@@ -5,8 +5,6 @@ import java.util.List;
 
 import android.content.Context;
 import android.graphics.drawable.StateListDrawable;
-import android.os.Handler;
-import android.os.Message;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.view.LayoutInflater;
@@ -87,7 +85,6 @@ public class QuestionMainView extends RelativeLayout  {
 		mOptionView = (LinearLayout) rootView.findViewById(R.id.question_option);
 		mAnalysis = (TextView) findViewById(R.id.question_anlaysis);
 		mAnalysis.setVisibility(View.INVISIBLE);
-
 	}
 
 	void setQuestion(Question question) {
@@ -121,11 +118,11 @@ public class QuestionMainView extends RelativeLayout  {
 		String[] options = mQuestion.getOption().split(DoctorConst.DOUBLE_SEPRATOR);
 		mOptionView.removeAllViews();
 		String rightAnswer = mQuestion.getAnswer();
-		int pos = 0;
+		int i = 0;
 		for (String current : options) {
 			ViewGroup vg = (ViewGroup) LayoutInflater.from(getContext()).inflate(R.layout.question_option_item, null);
 			vg.setOnClickListener(mOptionClickListener);
-			vg.setTag(pos);
+			vg.setTag(i);
 
 			// Text
 			TextView textView = (TextView) (vg.findViewById(R.id.option_item_text));
@@ -133,20 +130,21 @@ public class QuestionMainView extends RelativeLayout  {
 
 			// 图片
 			if (isFinishedTheQuestion) { //用户刚才已经做过的题目
-				setOptionChoicedStatus(vg, current, rightAnswer);
+				String currentAnswer = Answer[i];
+				setOptionChoicedStatus(vg, currentAnswer, rightAnswer);
 			}
 			else {
 				//没有做过的题
 				StateListDrawable stalistDrawable = new StateListDrawable();
 				int pressed = android.R.attr.state_pressed;
-				stalistDrawable.addState(new int[] {pressed}, getResources().getDrawable(mPressedId[pos]));
-				stalistDrawable.addState(new int[] {-pressed}, getResources().getDrawable(mResId1[pos]));
+				stalistDrawable.addState(new int[] {pressed}, getResources().getDrawable(mPressedId[i]));
+				stalistDrawable.addState(new int[] {-pressed}, getResources().getDrawable(mResId1[i]));
 				ImageView imageView = (ImageView) (vg.findViewById(R.id.option_item_image));
 				imageView.setImageDrawable(stalistDrawable);				
 			}
 
 			mOptionView.addView(vg);
-			pos++;
+			i++;
 		}
 
 		// 正文
@@ -169,12 +167,12 @@ public class QuestionMainView extends RelativeLayout  {
 		boolean isRight = current.equals(rightAnswer);
 		if (isRight) {
 			//当前答案是正确答案,打上勾
-			imageView.setImageResource(R.drawable.ic_right);
+			imageView.setImageResource(R.drawable.jiakao_practise_true_day);
 		}
 		else {
 			//用户回答不是正确答案的选项，打上X
 			if (mUserAnswer.equals(current))
-				imageView.setImageResource(R.drawable.ic_error);
+				imageView.setImageResource(R.drawable.jiakao_practise_false_day);
 		}
 	}
 
@@ -192,8 +190,8 @@ public class QuestionMainView extends RelativeLayout  {
 			int count = mOptionView.getChildCount();
 			for (int i = 0; i < count; i++) {
 				ViewGroup vg = (ViewGroup) mOptionView.getChildAt(i);
-				String current = Answer[i];
-				setOptionChoicedStatus(vg, current, rightAnswer);
+				String currentAnswer = Answer[i];
+				setOptionChoicedStatus(vg, currentAnswer, rightAnswer);
 			}
 			
 			//2. 设置显示详情
