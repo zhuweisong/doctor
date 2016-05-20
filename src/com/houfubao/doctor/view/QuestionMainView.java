@@ -33,8 +33,6 @@ public class QuestionMainView extends RelativeLayout  {
 	private LinearLayout mOptionView;
 	private TextView mAnalysis;
 
-	private Handler mHandler;
-
 	private String mUserAnswer;
 	private Question mQuestion;
 	private QuestionManager mQuestionManager;
@@ -68,7 +66,6 @@ public class QuestionMainView extends RelativeLayout  {
 		super(context, null, 0);
 		mQuestionManager = DoctorState.getInstance().getQuestionManager();
 		mCallbackReference = new WeakReference<OptionClickCallback>(callback);
-		mHandler = new MyHandler(this);
 		initVew(context);
 	}
 
@@ -145,7 +142,7 @@ public class QuestionMainView extends RelativeLayout  {
 				stalistDrawable.addState(new int[] {pressed}, getResources().getDrawable(mPressedId[pos]));
 				stalistDrawable.addState(new int[] {-pressed}, getResources().getDrawable(mResId1[pos]));
 				ImageView imageView = (ImageView) (vg.findViewById(R.id.option_item_image));
-				imageView.setBackground(stalistDrawable);				
+				imageView.setImageDrawable(stalistDrawable);				
 			}
 
 			mOptionView.addView(vg);
@@ -189,44 +186,29 @@ public class QuestionMainView extends RelativeLayout  {
 			int pos = (Integer) v.getTag();
 			mUserAnswer = Answer[pos];
 			String rightAnswer = mQuestion.getAnswer();
+			boolean isRightChoice = mUserAnswer.equals(rightAnswer);
+			
+			//1. 设置各选项上A、B等的状态
 			int count = mOptionView.getChildCount();
 			for (int i = 0; i < count; i++) {
 				ViewGroup vg = (ViewGroup) mOptionView.getChildAt(i);
 				String current = Answer[i];
 				setOptionChoicedStatus(vg, current, rightAnswer);
 			}
-
+			
+			//2. 设置显示详情
+			if (!isRightChoice) {
+				mAnalysis.setVisibility(View.VISIBLE);
+			}
+				
+			//3. 回调
 			OptionClickCallback callback = mCallbackReference.get();
 			if (callback != null) {
-				callback.onOptionClick(pos, mUserAnswer.equals(mQuestion.getAnswer()), mUserAnswer);
+				callback.onOptionClick(pos, isRightChoice, mUserAnswer);
 			}
 		}
-
 	}
 
-	// *
-	static class MyHandler extends Handler {
-		WeakReference<QuestionMainView> mQVReference;
-
-		public MyHandler(QuestionMainView qmv) {
-			mQVReference = new WeakReference<QuestionMainView>(qmv);
-		}
-
-		@Override
-		public void handleMessage(Message msg) {
-			QuestionMainView qView = mQVReference.get();
-			if (qView == null) {
-				return;
-			}
-
-			switch (msg.what) {
-			default:
-				break;
-			}
-			super.handleMessage(msg);
-		}
-	}
-	
 	/**
 	 * 获取题目的回调
 	 *

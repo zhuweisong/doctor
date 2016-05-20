@@ -177,6 +177,9 @@ public class OrderTrainingActivity extends ActionBarActivity implements Question
 	@Override
 	public void onOptionClick(int pos, boolean isRight, String userAnswer) {
 		mUserAnswer.put(pos, userAnswer);
+		if (isRight) {
+			mPager.setCurrentItem(pos+1, true);
+		}
 	}
 	
 	class MyQuestionPageAdapter extends PagerAdapter {
