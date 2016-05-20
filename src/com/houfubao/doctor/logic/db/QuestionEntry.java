@@ -116,7 +116,7 @@ public class QuestionEntry extends BaseEntry {
 				q.setChapter(cursor.getInt((cursor.getColumnIndex(QuestionColumns.COLUMN_CHAPTER))));
 				q.setPicture(cursor.getString((cursor.getColumnIndex(QuestionColumns.COLUMN_PICTURE))));
 				q.setAnalysis(cursor.getString((cursor.getColumnIndex(QuestionColumns.COLUMN_DETAIL_ANALYSIS))));
-				q.setPos(cursor.getInt((cursor.getColumnIndex(QuestionColumns.COLUMN_ORDER))));
+				q.setOrder(cursor.getInt((cursor.getColumnIndex(QuestionColumns.COLUMN_ORDER))));
 				q.setUpdateAt(cursor.getLong((cursor.getColumnIndex(QuestionColumns.COLUMN_UPDATE_AT))));
 				
 				QLog.i(TAG, "query question: "+ q.getOrder());

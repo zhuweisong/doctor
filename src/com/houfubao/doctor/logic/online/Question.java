@@ -37,6 +37,7 @@ public class Question {
 		  this.picture = question.picture;
 		  this.analysis = question.analysis;
 		  this.updateAt = question.updateAt;
+		  this.pos = question.pos;
 	  }
 
 	  
@@ -49,7 +50,7 @@ public class Question {
 	  public Question setPicture(String picture) {this.picture = picture; return this;}
 	  public Question setAnalysis(String analysis) {this.analysis = analysis; return this;}
 	  public Question setUpdateAt(long updateAt) {this.updateAt = updateAt; return this; }
-	  public Question setPos(int pos) {this.pos = pos;return this;}
+	  public Question setOrder(int pos) {this.pos = pos;return this;}
 	  public Question setFlag(int flag) {this.flag = flag;return this;}
 
 	  

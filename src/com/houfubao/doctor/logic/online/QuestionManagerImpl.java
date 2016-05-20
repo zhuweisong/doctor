@@ -219,7 +219,7 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
 		if (from == DoctorConst.FROM_NETWORK) {
 			mQuestionACache.put(q.getOrder(), q);
 		}
-		
+		QLog.i(TAG, "handleRequestQuestionPosSucceedOnMainThread " + q.getOrder());
 		QuestionResultCallback callback = getCallbacker(ownerId);
 		if (callback != null ) {
 			callback.onGetQuestionSucceed(order, q);
@@ -342,6 +342,7 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
 			QLog.e(TAG, "onQueryQuestion from DB :" + start + " count:" + count + "|" + ql.size());
 			
 			for (Question q : ql) {
+				QLog.e(TAG, "onQueryQuestion from DB 11:" + q.toString());	
 				mQuestionACache.put(q.getOrder(), q);
 			}
 			

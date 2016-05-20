@@ -148,7 +148,7 @@ public class RequestorLeanClound extends Requestor {
 					q.setAnalysis(avObject.getString(QuestionColumns.DETAIL_ANALYSIS));
 	                Date updatedAt = avObject.getUpdatedAt();
 					q.setUpdateAt(updatedAt.getTime());
-					q.setPos(avObject.getInt(QuestionColumns.ORDER));
+					q.setOrder(avObject.getInt(QuestionColumns.ORDER));
 					ql.add(q);
 	                
 	                QLog.i(TAG, "getQuestions:" + q.toString());

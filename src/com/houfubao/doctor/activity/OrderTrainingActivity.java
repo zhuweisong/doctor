@@ -16,6 +16,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -177,6 +178,7 @@ public class OrderTrainingActivity extends ActionBarActivity implements Question
 	@Override
 	public void onOptionClick(int pos, boolean isRight, String userAnswer) {
 		mUserAnswer.put(pos, userAnswer);
+		QLog.i(TAG, "onOptionClick " + pos + "|" + isRight + "|" + userAnswer);
 		if (isRight) {
 			mPager.setCurrentItem(pos+1, true);
 		}
