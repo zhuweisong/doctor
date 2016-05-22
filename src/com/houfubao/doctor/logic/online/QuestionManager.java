@@ -51,7 +51,10 @@ public class QuestionManager extends BaseCallBack<QuestionManager.QuestionResult
      */
     public void getChapterInfo(QuestionResultCallback callback) {}
     
-
+    /**
+     * 将特定的题目先加进
+     */   
+    public void preloadQuestion(int i){}
 
     
     public static int calcQuestionCountByChapter(List<Chapter> chapters) {

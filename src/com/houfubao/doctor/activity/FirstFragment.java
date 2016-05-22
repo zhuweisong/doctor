@@ -5,6 +5,10 @@ import java.util.List;
 
 import com.houfubao.doctor.R;
 import com.houfubao.doctor.R.drawable;
+import com.houfubao.doctor.logic.main.DoctorConst;
+import com.houfubao.doctor.logic.main.DoctorState;
+import com.houfubao.doctor.logic.online.QuestionManager;
+import com.houfubao.doctor.logic.utils.PreferencesUtils;
 import com.houfubao.doctor.logic.utils.QLog;
 import com.houfubao.doctor.view.RowView;
 
@@ -29,7 +33,13 @@ public class FirstFragment extends Fragment implements AdapterView.OnItemClickLi
 
 	private GridView mGridView;
 	private ExampleListAdapter mAdapter;
-	
+
+    QuestionManager mQuestionManager = DoctorState.getInstance().getQuestionManager();
+    /**
+     * 顺序估量时的最后个题目顺号
+     */
+	private int mLastOrder;
+
 	private static final List<Sample> SAMPLES = new ArrayList<Sample>();
 	private static final String TAG = "FirstFragment";
 
@@ -51,6 +61,17 @@ public class FirstFragment extends Fragment implements AdapterView.OnItemClickLi
 	}
 
     @Override
+	public void onCreate(Bundle savedInstanceState) {
+
+        //preload last question
+		mLastOrder = PreferencesUtils.getInt(getActivity(), 
+				DoctorConst.QUESTION_LAST_ORDER);
+		mQuestionManager.preloadQuestion(mLastOrder);
+		
+		super.onCreate(savedInstanceState);
+	}
+
+	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.first_fragment, null);
         mGridView = (GridView)view.findViewById(R.id.main_list_view);
@@ -58,7 +79,8 @@ public class FirstFragment extends Fragment implements AdapterView.OnItemClickLi
         mGridView.setOnItemClickListener(this);
         mAdapter = new ExampleListAdapter();
         mGridView.setAdapter(mAdapter);
-      
+    
+		
         return view;
     }
     
@@ -152,6 +174,7 @@ public class FirstFragment extends Fragment implements AdapterView.OnItemClickLi
 	public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
 	    Class<? extends Activity> clazz = SAMPLES.get(position).viewClass;
 		Intent i = new Intent(getActivity(), clazz);
+		i.putExtra(OrderTrainingActivity.Question_Pos, mLastOrder);
 		startActivity(i);
 	}
 	

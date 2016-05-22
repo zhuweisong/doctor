@@ -25,6 +25,7 @@ import com.houfubao.doctor.logic.main.DoctorConst;
 import com.houfubao.doctor.logic.main.DoctorState;
 import com.houfubao.doctor.logic.online.Question;
 import com.houfubao.doctor.logic.online.QuestionManager;
+import com.houfubao.doctor.logic.utils.PreferencesUtils;
 import com.houfubao.doctor.logic.utils.QLog;
 
 public class QuestionMainView extends RelativeLayout implements View.OnClickListener  {
@@ -195,6 +196,23 @@ public class QuestionMainView extends RelativeLayout implements View.OnClickList
 		}
 	}
 	
+	//显示详情解释和回调
+	void onUserSelectedAnswer() {
+		
+		//1. 设置显示详情
+		boolean isRightChoice = mUserAnswer.equals(mQuestion.getAnswer());
+		if (!isRightChoice) {
+			mAnlaysisContainer.setVisibility(View.VISIBLE);
+		}
+		
+		//2. 回调
+		OptionClickCallback callback = mCallbackReference.get();
+		if (callback != null) {
+			PreferencesUtils.putInt(getContext(), DoctorConst.QUESTION_LAST_ORDER, mOrder);
+			callback.onOptionClick(mOrder, isRightChoice, mUserAnswer);
+		}
+	}
+	
 	@Override
 	public void onClick(View v) {
 		if (v.getId() == R.id.question_multi_confirm) {
@@ -214,19 +232,9 @@ public class QuestionMainView extends RelativeLayout implements View.OnClickList
 				setOptionChoicedStatus(vg, currentAnswer, rightAnswer);
 			}
 			
-			//2. 设置显示详情
-			boolean isRightChoice = mUserAnswer.equals(rightAnswer);
-			if (!isRightChoice) {
-				mAnlaysisContainer.setVisibility(View.VISIBLE);
-			}
-			
-			//3. 回调
-			OptionClickCallback callback = mCallbackReference.get();
-			if (callback != null) {
-				callback.onOptionClick(mOrder, isRightChoice, mUserAnswer);
-			}	
+			//2. 显示详情解释和回调
+			onUserSelectedAnswer();
 		}
-		
 	}
 	
 	/**
@@ -295,18 +303,8 @@ public class QuestionMainView extends RelativeLayout implements View.OnClickList
 				setOptionChoicedStatus(vg, currentAnswer, rightAnswer);
 			}
 			
-			//2. 设置显示详情
-			boolean isRightChoice = mUserAnswer.equals(rightAnswer);
-			if (!isRightChoice) {
-				mAnlaysisContainer.setVisibility(View.VISIBLE);
-			}
-				
-			QLog.i(TAG, "onOptionClicked: " + optionPos);
-			//3. 回调
-			OptionClickCallback callback = mCallbackReference.get();
-			if (callback != null) {
-				callback.onOptionClick(mOrder, isRightChoice, mUserAnswer);
-			}
+			//2. 显示详情解释和回调			
+			onUserSelectedAnswer();
 		}
 	}
 

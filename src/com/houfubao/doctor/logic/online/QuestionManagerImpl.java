@@ -9,6 +9,8 @@ import com.houfubao.doctor.logic.db.DoctorDBProxy;
 import com.houfubao.doctor.logic.main.DoctorConst;
 import com.houfubao.doctor.logic.main.DoctorState.NetworkStateChanged;
 import com.houfubao.doctor.logic.online.DoctorStruct.MessageObj;
+import com.houfubao.doctor.logic.online.QuestionManager.QuestionResultCallback;
+import com.houfubao.doctor.logic.utils.PreferencesUtils;
 import com.houfubao.doctor.logic.utils.QLog;
 import com.houfubao.doctor.logic.utils.VinsonAssertion;
 
@@ -20,8 +22,8 @@ import android.util.SparseArray;
 public class QuestionManagerImpl extends QuestionManager implements NetworkStateChanged  {
 
     private static final String TAG = "QuestionManagerImpl";
+    private static final String preLoad = "preLoad";
 
-    private final String KEY_LAST_ORDER = "LAST_QUESTION_ORDER"; //
     private final String KEY_QUESTION_UPDATEAT = "KEY_QUESTION_UPDATEAT"; //
     private final String KEY_CHAPTER_UPDATEAT = "KEY_CHAPTER_UPDATEAT"; //
     
@@ -41,9 +43,9 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
     private long mChapterUpdateAt = 0; //章节最后更新时间
     private long mQuestionUpdateAt = 0; //问题最后更新时间
     
-    private SharedPreferences mSharedPreference;
     private int mLastOrder;
     private int mTotal = Integer.MAX_VALUE;
+    private Context mContext;
     
     /** */
     Requestor mRequestor;
@@ -59,12 +61,9 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
 	}
     
 	public void init(Context context) {
-       	mSharedPreference = context.getSharedPreferences(
-       			DoctorConst.SHAREDPREFERENCE_KEY_SET,
-       			Context.MODE_PRIVATE |Context.MODE_MULTI_PROCESS);
-       	mLastOrder = mSharedPreference.getInt(KEY_LAST_ORDER, 0);
-       	mChapterUpdateAt = mSharedPreference.getLong(KEY_CHAPTER_UPDATEAT, 0);
-       	mQuestionUpdateAt = mSharedPreference.getLong(KEY_QUESTION_UPDATEAT, 0);
+		mContext = context;
+       	mChapterUpdateAt = PreferencesUtils.getLong(context, KEY_CHAPTER_UPDATEAT, 0);
+       	mQuestionUpdateAt = PreferencesUtils.getLong(context, KEY_QUESTION_UPDATEAT, 0);
        	
     	mRequestCallback = new QuestionRequestCallback();
     	mRequestor.addCallback(mRequestCallback);
@@ -110,7 +109,8 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
 	/**
      * 获取指定位置的题目
      */
-    public void getQuestion(QuestionResultCallback callback, int order) { 
+	@Override
+	public void getQuestion(QuestionResultCallback callback, int order) { 
     	String ownerId = callback.getOwnerId();
     	
     	//1. 读入数据
@@ -127,14 +127,14 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
     	//2. 提前读取
 		preloadFromDB(order);
 		
-		
-		//3.将最后一次读取order写入
-       	SharedPreferences.Editor editor = mSharedPreference.edit();
-        editor.putLong(KEY_LAST_ORDER, order);
-        editor.apply();
-		
 		return;
     }
+	
+	@Override    
+    public void preloadQuestion(int order){
+		preloadFromDB(order);
+	}
+
     
     private void preloadFromNetwork(String ownerId, int pos) {
 		mRequestor.getQuestions(mRequestCallback, ownerId, pos, NETWORK_RQUEST_COUNT);
@@ -146,7 +146,7 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
 		for (int i = curOrder;i < maxOrder;i++) {
 			if (mQuestionACache.get(i)==null) {
 				QLog.i(TAG, "preloadFromDB:" + curOrder + "|" + DB_RQUEST_COUNT);
-				mDbProxy.queryQuestion(mDBRequestCallback, TAG, i, DB_RQUEST_COUNT);
+				mDbProxy.queryQuestion(mDBRequestCallback, preLoad, i, DB_RQUEST_COUNT);
 				return;
 			}
 		}
@@ -278,9 +278,8 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
     			
     			//写入preference
     			mChapterUpdateAt = updateAt;
-    	       	SharedPreferences.Editor editor = mSharedPreference.edit();
-                editor.putLong(KEY_CHAPTER_UPDATEAT, mChapterUpdateAt);
-                editor.apply();
+    	       	PreferencesUtils.putLong(mContext, KEY_CHAPTER_UPDATEAT, mChapterUpdateAt);
+
                 
     			//重新从数据库读入数据
     			mDbProxy.queryChapter(mDBRequestCallback, ownerId);

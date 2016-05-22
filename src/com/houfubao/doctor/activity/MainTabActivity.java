@@ -17,6 +17,10 @@ import com.houfubao.doctor.R.id;
 import com.houfubao.doctor.R.layout;
 import com.houfubao.doctor.R.mipmap;
 import com.houfubao.doctor.R.string;
+import com.houfubao.doctor.logic.main.DoctorConst;
+import com.houfubao.doctor.logic.main.DoctorState;
+import com.houfubao.doctor.logic.online.QuestionManager;
+import com.houfubao.doctor.logic.utils.PreferencesUtils;
 import com.houfubao.doctor.view.tabpager.APSTSViewPager;
 import com.houfubao.doctor.view.tabpager.AdvancedPagerSlidingTabStrip;
 
@@ -26,15 +30,18 @@ import com.houfubao.doctor.view.tabpager.AdvancedPagerSlidingTabStrip;
 public class MainTabActivity extends ActionBarActivity implements ViewPager.OnPageChangeListener{
 	private static final String TAG = "MainTabActivity";
 
+	
     public AdvancedPagerSlidingTabStrip mAPSTS;
     public APSTSViewPager mVP;
     ActionBar mactionBar;
-
+    
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_icon_tab);
-        
+ 
+		
         initActionBar();
         initView();
     }

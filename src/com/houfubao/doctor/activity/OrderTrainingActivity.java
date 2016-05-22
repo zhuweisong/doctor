@@ -7,6 +7,7 @@ import com.houfubao.doctor.R;
 import com.houfubao.doctor.logic.main.DoctorState;
 import com.houfubao.doctor.logic.online.Chapter;
 import com.houfubao.doctor.logic.online.QuestionManager;
+import com.houfubao.doctor.logic.utils.PreferencesUtils;
 import com.houfubao.doctor.logic.utils.QLog;
 import com.houfubao.doctor.logic.utils.SimplePool;
 import com.houfubao.doctor.view.QuestionMainView;
@@ -29,6 +30,7 @@ public class OrderTrainingActivity extends ActionBarActivity implements Question
 	public final static String Question_Pos = "QUESTION_POS";
 
 	public static final String TAG = "OrderTrainingActivity";
+	
     
 	int mPos = 0;
 	QuestionMainView questionMainView;
@@ -41,7 +43,7 @@ public class OrderTrainingActivity extends ActionBarActivity implements Question
 	
 	List<Chapter> mChapters;
 	SparseArray<String> mUserAnswer = new SparseArray<String>();
-	
+    
 	/**
 	 * 存放用户在本页中已做题目答案
 	 */
@@ -53,7 +55,11 @@ public class OrderTrainingActivity extends ActionBarActivity implements Question
 		setContentView(R.layout.question_activity);
 		if (savedInstanceState != null) {
 			mPos = savedInstanceState.getInt(Question_Pos, 0);
+		} else {
+			mPos = getIntent().getIntExtra(Question_Pos, 0);
 		}
+		
+		QLog.i(TAG, "OrderTrainingActivity oncreate " + mPos);
 		
 		mCallback = new MyQuestionManagerCallback();
 		mQuestion = DoctorState.getInstance().getQuestionManager();
@@ -267,6 +273,7 @@ public class OrderTrainingActivity extends ActionBarActivity implements Question
 			int total = QuestionManager.calcQuestionCountByChapter(list);
 			QLog.i(TAG, "onGetChapterSucceed " + list.size() + "|" + total);
 			mPageAdapter.setQuestionCount(total);
+			mPager.setCurrentItem(mPos+1, false);
 			super.onGetChapterSucceed(list);
 		}
 

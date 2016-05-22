@@ -12,5 +12,7 @@ public class DoctorConst {
 	public static final String SEPRATOR = "!";
 	public static final String SEPRATOR2 = "\\|";
 	public static final String DOUBLE_SEPRATOR = "\\|\\|";
-	public static final String SHAREDPREFERENCE_KEY_SET = "Doctor_prefence";
+
+	
+	public final static String QUESTION_LAST_ORDER = "QUESTION_LAST_ORDER";
 }
