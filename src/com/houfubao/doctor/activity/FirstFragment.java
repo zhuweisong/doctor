@@ -45,14 +45,14 @@ public class FirstFragment extends Fragment implements AdapterView.OnItemClickLi
 
 	static {
 		SAMPLES.add(new Sample(OrderTrainingActivity.class, R.string.order_training, "4", R.drawable.rectangle_blue));
-		SAMPLES.add(new Sample(RandomTrainingActivity.class, R.string.ramdon_training, "5", R.drawable.rectangle_blue));
-		SAMPLES.add(new Sample(OrderTrainingActivity.class, R.string.special_subject_training, "6", R.drawable.rectangle_blue));
-		SAMPLES.add(new Sample(RandomTrainingActivity.class, R.string.notdon_training, "7", R.drawable.rectangle_blue));
+		SAMPLES.add(new Sample(RandomTrainingActivity.class, R.string.ramdon_training, "5", R.drawable.rectangle_green));
+		SAMPLES.add(new Sample(OrderTrainingActivity.class, R.string.special_subject_training, "6", R.drawable.rectangle_red));
+		SAMPLES.add(new Sample(RandomTrainingActivity.class, R.string.notdon_training, "7", R.drawable.rectangle_yellow));
 		
 		SAMPLES.add(new Sample(OrderTrainingActivity.class, R.string.function_test, "8", R.drawable.rectangle_blue));
-		SAMPLES.add(new Sample(OrderTrainingActivity.class, R.string.function_test, "8", R.drawable.rectangle_blue));
-		SAMPLES.add(new Sample(OrderTrainingActivity.class, R.string.function_test, "8", R.drawable.rectangle_blue));
-		SAMPLES.add(new Sample(OrderTrainingActivity.class, R.string.function_test, "8", R.drawable.rectangle_blue));
+		SAMPLES.add(new Sample(OrderTrainingActivity.class, R.string.function_test, "8", R.drawable.rectangle_green));
+		SAMPLES.add(new Sample(OrderTrainingActivity.class, R.string.function_test, "8", R.drawable.rectangle_red));
+		SAMPLES.add(new Sample(OrderTrainingActivity.class, R.string.function_test, "8", R.drawable.rectangle_yellow));
 	}
 
     public static FirstFragment instance() {
