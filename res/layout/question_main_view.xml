@@ -4,52 +4,56 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="12dp" >
-    
-    
+
     <TextView
         android:id="@+id/question_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/question_main_font"
-        android:lineSpacingMultiplier="1.2" 
-        />
+        android:lineSpacingMultiplier="1.2"
+        android:textSize="@dimen/question_main_font" />
 
     <LinearLayout
         android:id="@+id/question_option"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        />
-    
-    <Button 
+        android:orientation="vertical" />
+
+    <Button
         android:id="@+id/question_multi_confirm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/button_background_selector"
+        android:gravity="center"
         android:paddingLeft="80dp"
         android:paddingRight="80dp"
-        android:gravity="center"
-        android:layout_gravity="center_horizontal"
         android:text="@string/question_multi_confirm"
         android:textColor="@color/white"
-        android:background="@drawable/button_background_selector"
-        android:visibility="gone"
-        />
-    
-    <TextView
+        android:visibility="gone" />
+
+    <!-- 分析栏 -->
+    <LinearLayout
+        android:id="@+id/question_anlaysis_container"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="12dp"
-        android:text="@string/question_analysis_detail"
-        android:textSize="@dimen/question_main_font"
-        />
-    
-    <TextView
-        android:id="@+id/question_anlaysis" 
-        android:layout_width="wrap_content" 
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/question_option_fontsize"
-    	android:paddingLeft="@dimen/option_first_indent"
-        />
-    
+        android:layout_height="wrap_content" 
+        android:orientation="vertical"
+        android:visibility="gone"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/question_analysis_detail"
+            android:textSize="@dimen/question_main_font" />
+
+        <TextView
+            android:id="@+id/question_anlaysis"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/option_first_indent"
+            android:textSize="@dimen/question_option_fontsize" />
+    </LinearLayout>
+
 </LinearLayout>

@@ -36,6 +36,7 @@ public class QuestionMainView extends RelativeLayout implements View.OnClickList
 	private LinearLayout mOptionView;
 	private TextView mAnalysis;
 	private Button mMultiConfirm;
+	private ViewGroup mAnlaysisContainer;
 
 	private String mUserAnswer;
 	private Question mQuestion;
@@ -91,8 +92,8 @@ public class QuestionMainView extends RelativeLayout implements View.OnClickList
 		mTitle = (TextView) rootView.findViewById(R.id.question_title);
 		mOptionView = (LinearLayout) rootView.findViewById(R.id.question_option);
 		mAnalysis = (TextView) findViewById(R.id.question_anlaysis);
-		mAnalysis.setVisibility(View.INVISIBLE);
 		mMultiConfirm = (Button)findViewById(R.id.question_multi_confirm);
+		mAnlaysisContainer = (ViewGroup)findViewById(R.id.question_anlaysis_container);
 	}
 
 	private void setQuestion(Question question) {
@@ -167,7 +168,7 @@ public class QuestionMainView extends RelativeLayout implements View.OnClickList
 
 		// 正文
 		mAnalysis.setText(mQuestion.getAnalysis());
-		mAnalysis.setVisibility(isFinishedTheQuestion? View.VISIBLE : View.INVISIBLE);
+		mAnlaysisContainer.setVisibility(isFinishedTheQuestion? View.VISIBLE : View.INVISIBLE);
 	}
 
 	
@@ -216,7 +217,7 @@ public class QuestionMainView extends RelativeLayout implements View.OnClickList
 			//2. 设置显示详情
 			boolean isRightChoice = mUserAnswer.equals(rightAnswer);
 			if (!isRightChoice) {
-				mAnalysis.setVisibility(View.VISIBLE);
+				mAnlaysisContainer.setVisibility(View.VISIBLE);
 			}
 			
 			//3. 回调
@@ -297,7 +298,7 @@ public class QuestionMainView extends RelativeLayout implements View.OnClickList
 			//2. 设置显示详情
 			boolean isRightChoice = mUserAnswer.equals(rightAnswer);
 			if (!isRightChoice) {
-				mAnalysis.setVisibility(View.VISIBLE);
+				mAnlaysisContainer.setVisibility(View.VISIBLE);
 			}
 				
 			QLog.i(TAG, "onOptionClicked: " + optionPos);
