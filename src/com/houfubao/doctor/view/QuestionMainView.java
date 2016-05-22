@@ -95,7 +95,7 @@ public class QuestionMainView extends RelativeLayout implements View.OnClickList
 		mMultiConfirm = (Button)findViewById(R.id.question_multi_confirm);
 	}
 
-	void setQuestion(Question question) {
+	private void setQuestion(Question question) {
 		mQuestion = question;
 		updateView(question);
 	}
@@ -115,6 +115,10 @@ public class QuestionMainView extends RelativeLayout implements View.OnClickList
 		boolean isFinishedTheQuestion = (mUserAnswer != null);
 		
 		QLog.i(TAG, "updateView " + question.toString());
+		
+		//
+		mMultiChoiceOptionClicked.reset();
+		
 		// mSingleOrMulti
 		boolean isMultiChoice = question.isMultiChoice();
 		
@@ -264,6 +268,10 @@ public class QuestionMainView extends RelativeLayout implements View.OnClickList
 		
 		public int getSelectOptionCount() {
 			return mSelectedOption.size();
+		}
+		
+		public void reset() {
+			mSelectedOption.clear();
 		}
 	}
 	
