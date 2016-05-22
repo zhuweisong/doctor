@@ -18,9 +18,12 @@
     
     <!-- 题目页 -->
     <string name="question_analysis_detail">"试题详解"</string>
+    <string name="question_multi_confirm">"答案确认"</string>
     <string name="question_analysis_key">"考点"</string>
     <string name="examing_menu_item">考试模式</string>
     <string name="learning_menu_item">学习模式</string>
+    
+    
     <string name="action_bar_help">帮助与反馈</string>
     <string name="action_bar_share">分享</string>
     <string name="action_bar_add">增加</string>
