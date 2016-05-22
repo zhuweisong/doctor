@@ -29,7 +29,7 @@ public class OrderTrainingActivity extends ActionBarActivity implements Question
 	public final static String Question_Pos = "QUESTION_POS";
 
 	public static final String TAG = "OrderTrainingActivity";
-
+    
 	int mPos = 0;
 	QuestionMainView questionMainView;
 	

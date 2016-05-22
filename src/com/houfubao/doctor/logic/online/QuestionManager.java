@@ -48,8 +48,10 @@ public class QuestionManager extends BaseCallBack<QuestionManager.QuestionResult
     
     /**
      * 获取当前章节所有题目个数,-1表示全部
-     */    
+     */
     public void getChapterInfo(QuestionResultCallback callback) {}
+    
+
 
     
     public static int calcQuestionCountByChapter(List<Chapter> chapters) {

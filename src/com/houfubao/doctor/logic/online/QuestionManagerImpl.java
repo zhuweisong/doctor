@@ -20,14 +20,16 @@ import android.util.SparseArray;
 public class QuestionManagerImpl extends QuestionManager implements NetworkStateChanged  {
 
     private static final String TAG = "QuestionManagerImpl";
+
+    private final String KEY_LAST_ORDER = "LAST_QUESTION_ORDER"; //
+    private final String KEY_QUESTION_UPDATEAT = "KEY_QUESTION_UPDATEAT"; //
+    private final String KEY_CHAPTER_UPDATEAT = "KEY_CHAPTER_UPDATEAT"; //
+    
+    
     private static final int NETWORK_RQUEST_COUNT = 5; //每次从网络请求的数据量
     private static final int DB_RQUEST_COUNT = 5; //每次从数据库请求的数据量
     private static final int DB_PRELOAD_COUNT = 5; //每次从数据库请求的数据量
     private static final int ALL_CHAPTER = -1;
-    
-    private final String KEY_LAST_ORDER = "LAST_QUESTION_ORDER"; //
-    private final String KEY_QUESTION_UPDATEAT = "LAST_QUESTION_ORDER"; //
-    private final String KEY_CHAPTER_UPDATEAT = "KEY_CHAPTER_UPDATEAT"; //
     
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     
@@ -60,7 +62,7 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
        	mSharedPreference = context.getSharedPreferences(
        			DoctorConst.SHAREDPREFERENCE_KEY_SET,
        			Context.MODE_PRIVATE |Context.MODE_MULTI_PROCESS);
-       	mLastOrder = mSharedPreference.getInt(KEY_LAST_ORDER, 1);
+       	mLastOrder = mSharedPreference.getInt(KEY_LAST_ORDER, 0);
        	mChapterUpdateAt = mSharedPreference.getLong(KEY_CHAPTER_UPDATEAT, 0);
        	mQuestionUpdateAt = mSharedPreference.getLong(KEY_QUESTION_UPDATEAT, 0);
        	
@@ -111,6 +113,7 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
     public void getQuestion(QuestionResultCallback callback, int order) { 
     	String ownerId = callback.getOwnerId();
     	
+    	//1. 读入数据
     	Question question = mQuestionACache.get(order);
 		QLog.i(TAG, "get Question:" + order + "|" + (question==null));
     	if (question != null) {
@@ -121,7 +124,14 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
         	preloadFromNetwork(ownerId, order);
     	}
     	
+    	//2. 提前读取
 		preloadFromDB(order);
+		
+		
+		//3.将最后一次读取order写入
+       	SharedPreferences.Editor editor = mSharedPreference.edit();
+        editor.putLong(KEY_LAST_ORDER, order);
+        editor.apply();
 		
 		return;
     }
@@ -132,8 +142,10 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
 	
 	private void preloadFromDB(int curOrder)  {
 		int maxOrder = Math.min(curOrder + DB_PRELOAD_COUNT, mTotal);
+
 		for (int i = curOrder;i < maxOrder;i++) {
 			if (mQuestionACache.get(i)==null) {
+				QLog.i(TAG, "preloadFromDB:" + curOrder + "|" + DB_RQUEST_COUNT);
 				mDbProxy.queryQuestion(mDBRequestCallback, TAG, i, DB_RQUEST_COUNT);
 				return;
 			}
