@@ -5,7 +5,6 @@ import java.util.List;
 import com.houfubao.doctor.R;
 import com.houfubao.doctor.logic.main.DoctorState;
 import com.houfubao.doctor.logic.online.Chapter;
-import com.houfubao.doctor.logic.online.Question;
 import com.houfubao.doctor.logic.online.QuestionManager;
 import com.houfubao.doctor.logic.utils.QLog;
 import com.houfubao.doctor.logic.utils.SimplePool;
@@ -16,7 +15,6 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,7 +27,7 @@ public class OrderTrainingActivity extends ActionBarActivity implements Question
 
 	public static final String TAG = "OrderTrainingActivity";
 
-	int mPos = 1;
+	int mPos = 0;
 	QuestionMainView questionMainView;
 	
 	ViewPager mPager;
@@ -51,7 +49,7 @@ public class OrderTrainingActivity extends ActionBarActivity implements Question
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.question_activity);
 		if (savedInstanceState != null) {
-			mPos = savedInstanceState.getInt(Question_Pos, 1);
+			mPos = savedInstanceState.getInt(Question_Pos, 0);
 		}
 		
 		mCallback = new MyQuestionManagerCallback();
@@ -114,7 +112,6 @@ public class OrderTrainingActivity extends ActionBarActivity implements Question
 //        });
 
         return super.onCreateOptionsMenu(menu);
-
     }
     
 
@@ -180,7 +177,7 @@ public class OrderTrainingActivity extends ActionBarActivity implements Question
 		mUserAnswer.put(pos, userAnswer);
 		QLog.i(TAG, "onOptionClick " + pos + "|" + isRight + "|" + userAnswer);
 		if (isRight) {
-			mPager.setCurrentItem(pos, true);
+			mPager.setCurrentItem(pos + 1, true);
 		}
 	}
 	

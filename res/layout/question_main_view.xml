@@ -25,7 +25,13 @@
         android:id="@+id/question_multi_confirm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingLeft="80dp"
+        android:paddingRight="80dp"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"
         android:text="@string/question_multi_confirm"
+        android:textColor="@color/white"
+        android:background="@drawable/button_background_selector"
         android:visibility="gone"
         />
     

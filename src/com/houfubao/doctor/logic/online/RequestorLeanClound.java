@@ -1,6 +1,8 @@
 package com.houfubao.doctor.logic.online;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 import java.util.List;
@@ -118,6 +120,22 @@ public class RequestorLeanClound extends Requestor {
     	public MyFindCallback(String tag) {
     		mTag = tag;
     	}
+    	/**
+    	 * 将答案按A、B、C、D、E的顺序排好
+    	 */
+    	String sortMultiChoiceAnswer(String answer) {
+    		String []Tmp = answer.split(DoctorConst.SEPRATOR2);
+    		Arrays.sort(Tmp);
+    		StringBuilder sb = new StringBuilder();
+    		for (String string : Tmp) {
+				sb.append(string);
+				sb.append(DoctorConst.SEPRATOR2);
+			}
+    		
+    		String result = sb.delete(sb.length() - DoctorConst.SEPRATOR2.length(),
+    					sb.length()).toString();
+    		return result;
+    	}
     	
 		@Override
 		public void done(List<AVObject> list, AVException e) {
@@ -141,7 +159,6 @@ public class RequestorLeanClound extends Requestor {
 					q.setQId(avObject.getInt(QuestionColumns.QID));
 					q.setTitle(avObject.getString(QuestionColumns.TITLE));
 					q.setOption(avObject.getString(QuestionColumns.OPTION));
-					q.setAnswer(avObject.getString(QuestionColumns.ANSWER));
 					q.setAttr(avObject.getInt(QuestionColumns.ATTR));
 					q.setChapter(avObject.getInt(QuestionColumns.CHAPTER));
 					q.setPicture(avObject.getString(QuestionColumns.PICTURE));
@@ -149,6 +166,13 @@ public class RequestorLeanClound extends Requestor {
 	                Date updatedAt = avObject.getUpdatedAt();
 					q.setUpdateAt(updatedAt.getTime());
 					q.setOrder(avObject.getInt(QuestionColumns.ORDER));
+					String answer = avObject.getString(QuestionColumns.ANSWER);
+					if (q.isMultiChoice()) {
+						q.setAnswer(sortMultiChoiceAnswer(answer));
+					} else {
+						q.setAnswer(answer);	
+					}
+					
 					ql.add(q);
 	                
 	                QLog.i(TAG, "getQuestions:" + q.toString());

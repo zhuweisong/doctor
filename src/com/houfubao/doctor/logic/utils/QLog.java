@@ -6,7 +6,7 @@ import android.util.Log;
 
 public class QLog {
 
-	public static String TAG = "gllauncher";
+	public static String TAG = "doctor";
 
 	public static void i(String tag, String msg) {
 		if (DoctorConst.DEBUG) {

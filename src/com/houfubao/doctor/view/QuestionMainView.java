@@ -1,20 +1,24 @@
 package com.houfubao.doctor.view;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import android.content.Context;
 import android.graphics.drawable.StateListDrawable;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.houfubao.doctor.R;
 import com.houfubao.doctor.logic.main.DoctorConst;
@@ -23,7 +27,7 @@ import com.houfubao.doctor.logic.online.Question;
 import com.houfubao.doctor.logic.online.QuestionManager;
 import com.houfubao.doctor.logic.utils.QLog;
 
-public class QuestionMainView extends RelativeLayout  {
+public class QuestionMainView extends RelativeLayout implements View.OnClickListener  {
 	public final static String TAG = "QuestionMainView";
 
 	private int mOrder;
@@ -31,15 +35,17 @@ public class QuestionMainView extends RelativeLayout  {
 	private TextView mTitle;
 	private LinearLayout mOptionView;
 	private TextView mAnalysis;
+	private Button mMultiConfirm;
 
 	private String mUserAnswer;
 	private Question mQuestion;
 	private QuestionManager mQuestionManager;
 	private QuestionManager.QuestionResultCallback mCallback = new MyQuestionManager();
 	private WeakReference<OptionClickCallback> mCallbackReference;
-	private onOptionClicked mOptionClickListener = new onOptionClicked();
-
-	private static final int mResId1[] = {
+	private onSingleChoiceOptionClicked mOptionClickListener = new onSingleChoiceOptionClicked();
+	private onMultiChoiceOptionClicked mMultiChoiceOptionClicked = new onMultiChoiceOptionClicked();
+	
+	private static final int mUnpressedResId[] = {
 			R.drawable.jiakao_practise_a_n_day,
 			R.drawable.jiakao_practise_b_n_day,
 			R.drawable.jiakao_practise_c_n_day,
@@ -47,7 +53,7 @@ public class QuestionMainView extends RelativeLayout  {
 			R.drawable.jiakao_practise_e_n_day,
 			R.drawable.jiakao_practise_f_n_day };
 
-	private static final int mPressedId[] = {
+	private static final int mPressedResId[] = {
 			R.drawable.jiakao_practise_a_s_day,
 			R.drawable.jiakao_practise_b_s_day,
 			R.drawable.jiakao_practise_c_s_day,
@@ -86,6 +92,7 @@ public class QuestionMainView extends RelativeLayout  {
 		mOptionView = (LinearLayout) rootView.findViewById(R.id.question_option);
 		mAnalysis = (TextView) findViewById(R.id.question_anlaysis);
 		mAnalysis.setVisibility(View.INVISIBLE);
+		mMultiConfirm = (Button)findViewById(R.id.question_multi_confirm);
 	}
 
 	void setQuestion(Question question) {
@@ -109,7 +116,9 @@ public class QuestionMainView extends RelativeLayout  {
 		
 		QLog.i(TAG, "updateView " + question.toString());
 		// mSingleOrMulti
-		int iconRes = question.isMultiChoice()? R.drawable.question_multi_choice : R.drawable.question_single_choice;
+		boolean isMultiChoice = question.isMultiChoice();
+		
+		int iconRes = isMultiChoice? R.drawable.question_multi_choice : R.drawable.question_single_choice;
 		VerticalImageSpan imgSpan = new VerticalImageSpan(getContext(),iconRes);
 		SpannableString spanString = new SpannableString("icon");
 		spanString.setSpan(imgSpan, 0, 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -123,7 +132,7 @@ public class QuestionMainView extends RelativeLayout  {
 		int optionPos = 0;
 		for (String current : options) {
 			ViewGroup vg = (ViewGroup) LayoutInflater.from(getContext()).inflate(R.layout.question_option_item, null);
-			vg.setOnClickListener(mOptionClickListener);
+			vg.setOnClickListener(isMultiChoice? mMultiChoiceOptionClicked : mOptionClickListener);
 			vg.setTag(optionPos);
 
 			// Text
@@ -139,8 +148,8 @@ public class QuestionMainView extends RelativeLayout  {
 				//没有做过的题
 				StateListDrawable stalistDrawable = new StateListDrawable();
 				int pressed = android.R.attr.state_pressed;
-				stalistDrawable.addState(new int[] {pressed}, getResources().getDrawable(mPressedId[optionPos]));
-				stalistDrawable.addState(new int[] {-pressed}, getResources().getDrawable(mResId1[optionPos]));
+				stalistDrawable.addState(new int[] {pressed}, getResources().getDrawable(mPressedResId[optionPos]));
+				stalistDrawable.addState(new int[] {-pressed}, getResources().getDrawable(mUnpressedResId[optionPos]));
 				ImageView imageView = (ImageView) (vg.findViewById(R.id.option_item_image));
 				imageView.setImageDrawable(stalistDrawable);				
 			}
@@ -148,6 +157,9 @@ public class QuestionMainView extends RelativeLayout  {
 			mOptionView.addView(vg);
 			optionPos++;
 		}
+		
+		mMultiConfirm.setVisibility(isMultiChoice? View.VISIBLE:View.GONE);
+		mMultiConfirm.setOnClickListener(this);
 
 		// 正文
 		mAnalysis.setText(mQuestion.getAnalysis());
@@ -162,32 +174,110 @@ public class QuestionMainView extends RelativeLayout  {
 	/**
 	 * 当用户已经做了此题目后，设置其X和勾的状态
 	 */
-	void setOptionChoicedStatus(ViewGroup vg, String current, String rightAnswer) {
+	void setOptionChoicedStatus(ViewGroup vg, String currentOption, String rightAnswer) {
 		ImageView imageView = (ImageView) (vg.findViewById(R.id.option_item_image));
 		vg.setClickable(false);
 
-		boolean isRight = current.equals(rightAnswer);
+		boolean isRight = rightAnswer.contains(currentOption);
 		if (isRight) {
 			//当前答案是正确答案,打上勾
 			imageView.setImageResource(R.drawable.jiakao_practise_true_day);
 		}
 		else {
 			//用户回答不是正确答案的选项，打上X
-			if (mUserAnswer.equals(current))
+			if (mUserAnswer.contains(currentOption))
 				imageView.setImageResource(R.drawable.jiakao_practise_false_day);
 		}
 	}
-
-
-	class onOptionClicked implements View.OnClickListener {
+	
+	@Override
+	public void onClick(View v) {
+		if (v.getId() == R.id.question_multi_confirm) {
+			//1. 设置各选项上A、B等的状态
+			int selectCount = mMultiChoiceOptionClicked.getSelectOptionCount();
+			if (selectCount < 2) {
+				Toast.makeText(getContext(), R.string.question_remind_multi_select, Toast.LENGTH_LONG).show();
+				return;
+			}
+			
+			mUserAnswer = mMultiChoiceOptionClicked.getSelectedAnswer();
+			String rightAnswer = mQuestion.getAnswer();
+			int count = mOptionView.getChildCount();
+			for (int i = 0; i < count; i++) {
+				ViewGroup vg = (ViewGroup) mOptionView.getChildAt(i);
+				String currentAnswer = Answer[i];
+				setOptionChoicedStatus(vg, currentAnswer, rightAnswer);
+			}
+			
+			//2. 设置显示详情
+			boolean isRightChoice = mUserAnswer.equals(rightAnswer);
+			if (!isRightChoice) {
+				mAnalysis.setVisibility(View.VISIBLE);
+			}
+			
+			//3. 回调
+			OptionClickCallback callback = mCallbackReference.get();
+			if (callback != null) {
+				callback.onOptionClick(mOrder, isRightChoice, mUserAnswer);
+			}	
+		}
+		
+	}
+	
+	/**
+	 * 多选题选择答案后回调事件
+	 */
+	class onMultiChoiceOptionClicked implements View.OnClickListener {
+		ArrayList<Integer> mSelectedOption = new ArrayList<Integer>(); 
+		
+		@Override
+		public void onClick(View vg) {
+			Integer optionPos = (Integer)vg.getTag();
+			
+			boolean isSelected = mSelectedOption.contains(optionPos);
+			ImageView imageView = (ImageView) (vg.findViewById(R.id.option_item_image));
+			
+			//将当状态取反
+			if (isSelected) {
+				mSelectedOption.remove(optionPos);
+				imageView.setImageResource(mUnpressedResId[optionPos]);
+			}
+			else {
+				mSelectedOption.add(optionPos);
+				imageView.setImageResource(mPressedResId[optionPos]);
+			}
+		}
+		
+		public String getSelectedAnswer() {
+			Collections.sort(mSelectedOption);
+			StringBuilder sb = new StringBuilder();
+			for (Integer selected : mSelectedOption) {
+				String answer = Answer[selected];
+				sb.append(answer);
+				sb.append(DoctorConst.SEPRATOR2);
+			}
+			int start = sb.length()-DoctorConst.SEPRATOR2.length();
+			int end = sb.length();
+			String result = sb.delete(start, end).toString();
+			return result;
+		}
+		
+		public int getSelectOptionCount() {
+			return mSelectedOption.size();
+		}
+	}
+	
+	/**
+	 * 单选题选择答案后回调事件
+	 */
+	class onSingleChoiceOptionClicked implements View.OnClickListener {
 
 		@Override
 		public void onClick(View v) {
 			int optionPos = (Integer) v.getTag();
 			mUserAnswer = Answer[optionPos];
 			String rightAnswer = mQuestion.getAnswer();
-			boolean isRightChoice = mUserAnswer.equals(rightAnswer);
-			
+
 			//1. 设置各选项上A、B等的状态
 			int count = mOptionView.getChildCount();
 			for (int i = 0; i < count; i++) {
@@ -197,6 +287,7 @@ public class QuestionMainView extends RelativeLayout  {
 			}
 			
 			//2. 设置显示详情
+			boolean isRightChoice = mUserAnswer.equals(rightAnswer);
 			if (!isRightChoice) {
 				mAnalysis.setVisibility(View.VISIBLE);
 			}
@@ -234,4 +325,6 @@ public class QuestionMainView extends RelativeLayout  {
 			super.onGetQuestionSucceed(pos, q);
 		}
 	}
+
+
 }
