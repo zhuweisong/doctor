@@ -1,5 +1,6 @@
 package com.houfubao.doctor.activity;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 import com.houfubao.doctor.R;
@@ -9,6 +10,7 @@ import com.houfubao.doctor.logic.online.QuestionManager;
 import com.houfubao.doctor.logic.utils.QLog;
 import com.houfubao.doctor.logic.utils.SimplePool;
 import com.houfubao.doctor.view.QuestionMainView;
+import com.houfubao.doctor.view.ViewPagerFixedSpeedScoller;
 
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
@@ -20,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.Toast;
 
 public class OrderTrainingActivity extends ActionBarActivity implements QuestionMainView.OptionClickCallback {
@@ -65,6 +68,8 @@ public class OrderTrainingActivity extends ActionBarActivity implements Question
 		mPager = (ViewPager)findViewById(R.id.question_viewpager);
 		mPageAdapter = new MyQuestionPageAdapter();
 		mPager.setAdapter(mPageAdapter);
+		
+		setViewpageVelocity();
     }
     
     private void initActionBar() {
@@ -73,6 +78,23 @@ public class OrderTrainingActivity extends ActionBarActivity implements Question
     	mactionBar.setDisplayHomeAsUpEnabled(true);
     	mactionBar.setDisplayShowHomeEnabled(false);
         mactionBar.setTitle(R.string.order_training);
+    }
+    
+    private void setViewpageVelocity() {
+    	ViewPagerFixedSpeedScoller mScroller = null;  
+    	try {  
+    	    Field mField;
+    	  
+    	    mField = ViewPager.class.getDeclaredField("mScroller");  
+    	    mField.setAccessible(true);  
+    	  
+    	    mScroller = new ViewPagerFixedSpeedScoller(  
+    	        getBaseContext(),  new AccelerateInterpolator());  
+    	    mScroller.setmDuration(400); // 600ms  
+    	    mField.set(mPager, mScroller);
+    	} catch (Exception e) {
+    	    e.printStackTrace();  
+    	}
     }
     
     @Override
@@ -113,6 +135,8 @@ public class OrderTrainingActivity extends ActionBarActivity implements Question
 
         return super.onCreateOptionsMenu(menu);
     }
+    
+    
     
 
     @Override
