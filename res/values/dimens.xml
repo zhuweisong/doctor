@@ -17,6 +17,8 @@
     <dimen name="main_myitem_text_size">18sp</dimen>
     <dimen name="main_item_padding">40dp</dimen>
     <dimen name="main_myitem_padding">30dp</dimen>
+    <dimen name="margin_padding_size">8dp</dimen>
+    
                 
     <!--question-->
     <dimen name="question_main_font">18sp</dimen>
