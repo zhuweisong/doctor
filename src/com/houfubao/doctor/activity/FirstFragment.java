@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.houfubao.doctor.R;
-import com.houfubao.doctor.R.drawable;
 import com.houfubao.doctor.logic.main.DoctorConst;
 import com.houfubao.doctor.logic.main.DoctorState;
 import com.houfubao.doctor.logic.online.QuestionManager;
@@ -14,26 +13,20 @@ import com.houfubao.doctor.view.RowView;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.GridView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 
 /**
  * Created by sevenzhu on 2016/05/08.
  */
-public class FirstFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class FirstFragment extends Fragment {
 
-	private GridView mGridView;
-	private ExampleListAdapter mAdapter;
-
+	private ViewGroup mGridView;
+	private OnMainQuestionViewClicked mMainQuestionClicked;
+	
     QuestionManager mQuestionManager = DoctorState.getInstance().getQuestionManager();
     /**
      * 顺序估量时的最后个题目顺号
@@ -44,15 +37,12 @@ public class FirstFragment extends Fragment implements AdapterView.OnItemClickLi
 	private static final String TAG = "FirstFragment";
 
 	static {
-		SAMPLES.add(new Sample(OrderTrainingActivity.class, R.string.order_training, "4", R.drawable.rectangle_blue));
-		SAMPLES.add(new Sample(RandomTrainingActivity.class, R.string.ramdon_training, "5", R.drawable.rectangle_green));
-		SAMPLES.add(new Sample(OrderTrainingActivity.class, R.string.special_subject_training, "6", R.drawable.rectangle_red));
-		SAMPLES.add(new Sample(RandomTrainingActivity.class, R.string.notdon_training, "7", R.drawable.rectangle_yellow));
-		
-		SAMPLES.add(new Sample(OrderTrainingActivity.class, R.string.function_test, "8", R.drawable.rectangle_blue));
-		SAMPLES.add(new Sample(OrderTrainingActivity.class, R.string.function_test, "8", R.drawable.rectangle_green));
-		SAMPLES.add(new Sample(OrderTrainingActivity.class, R.string.function_test, "8", R.drawable.rectangle_red));
-		SAMPLES.add(new Sample(OrderTrainingActivity.class, R.string.function_test, "8", R.drawable.rectangle_yellow));
+		SAMPLES.add(new Sample(OrderTrainingActivity.class, 
+				R.string.order_training, R.string.order_training, R.drawable.rectangle_blue));
+		SAMPLES.add(new Sample(OrderTrainingActivity.class, 
+				R.string.special_subject_training, R.string.special_subject_training, R.drawable.rectangle_red));
+		SAMPLES.add(new Sample(OrderTrainingActivity.class, 
+				R.string.function_test, R.string.function_test, R.drawable.rectangle_blue));		
 	}
 
     public static FirstFragment instance() {
@@ -68,101 +58,37 @@ public class FirstFragment extends Fragment implements AdapterView.OnItemClickLi
 				DoctorConst.QUESTION_LAST_ORDER);
 		mQuestionManager.preloadQuestion(mLastOrder);
 		
+		mMainQuestionClicked = new OnMainQuestionViewClicked();
+		
 		super.onCreate(savedInstanceState);
 	}
 
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.first_fragment, null);
-        mGridView = (GridView)view.findViewById(R.id.main_list_view);
-//      mGridView.setNumColumns(4);
-        mGridView.setOnItemClickListener(this);
-        mAdapter = new ExampleListAdapter();
-        mGridView.setAdapter(mAdapter);
+        mGridView = (ViewGroup)view.findViewById(R.id.main_list_view);
+        
+        int size = SAMPLES.size();
+        for (int i=0;i<size;i++) {
+			Sample sample = SAMPLES.get(i);
+			RowView rowView = new RowView(getActivity());
+			rowView.setText(sample.txtId, sample.subtext, sample.drawrableId);
+			rowView.setTag(i);
+			rowView.setOnClickListener(mMainQuestionClicked);
+			mGridView.addView(rowView);
+		}
     
-		
         return view;
     }
-    
-	private class ExampleListAdapter implements ListAdapter {
-
-
-		@Override
-		public void registerDataSetObserver(DataSetObserver observer) {
-		}
-
-		@Override
-		public void unregisterDataSetObserver(DataSetObserver observer) {
-		}
-
-		@Override
-		public int getCount() {
-			return SAMPLES.size();
-		}
-
-		@Override
-		public Object getItem(int position) {
-			return SAMPLES.get(position);
-		}
-
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
-
-		@Override
-		public boolean hasStableIds() {
-			return true;
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			RowView rowView;
-			if (convertView != null) {
-				rowView = (RowView) convertView;
-			} else {
-				rowView = new RowView(getActivity());
-			}
-
-			Sample sample = SAMPLES.get(position);
-			rowView.setText(sample.txtId, sample.drawrableId);
-			rowView.setSubtext(sample.subtext);
-			return rowView;
-		}
-
-		@Override
-		public int getItemViewType(int position) {
-			return 0;
-		}
-
-		@Override
-		public int getViewTypeCount() {
-			return 1;
-		}
-
-		@Override
-		public boolean isEmpty() {
-			return SAMPLES.isEmpty();
-		}
-
-		@Override
-		public boolean areAllItemsEnabled() {
-			return true;
-		}
-
-		@Override
-		public boolean isEnabled(int position) {
-			return true;
-		}
-	}
+   
 	
 	private static class Sample {
 		public Class<? extends Activity> viewClass;
 		public int txtId;
 		public int drawrableId; //图id
-		public String subtext;
+		public int subtext;
 
-		public Sample(Class<? extends Activity> viewClass, int text, String subtext, int drawrableId) {
+		public Sample(Class<? extends Activity> viewClass, int text, int subtext, int drawrableId) {
 			this.viewClass = viewClass;
 			this.txtId = text;
 			this.subtext = subtext;
@@ -170,12 +96,15 @@ public class FirstFragment extends Fragment implements AdapterView.OnItemClickLi
 		}
 	}
 
-	@Override
-	public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-	    Class<? extends Activity> clazz = SAMPLES.get(position).viewClass;
-		Intent i = new Intent(getActivity(), clazz);
-		i.putExtra(OrderTrainingActivity.Question_Pos, mLastOrder);
-		startActivity(i);
+	class OnMainQuestionViewClicked implements View.OnClickListener {
+		@Override
+		public void onClick(View v) {
+			int position = (Integer)v.getTag();
+		    Class<? extends Activity> clazz = SAMPLES.get(position).viewClass;
+			Intent i = new Intent(getActivity(), clazz);
+			i.putExtra(OrderTrainingActivity.Question_Pos, mLastOrder);
+			startActivity(i);
+		}
 	}
 	
 }

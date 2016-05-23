@@ -13,48 +13,59 @@
 package com.houfubao.doctor.view;
 
 import com.houfubao.doctor.R;
-import com.houfubao.doctor.R.id;
-import com.houfubao.doctor.R.layout;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.AbsoluteSizeSpan;
+import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+public class RowView extends FrameLayout {
+	private TextView mTextView;
 
-public class RowView extends FrameLayout{
-  private  TextView mTextView;
-  private  TextView mSubTextView;
+	public RowView(Context context) {
+		this(context, null);
+	}
 
-  public RowView(Context context) {
-    this(context, null);
-  }
+	public RowView(Context context, AttributeSet attrs) {
+		this(context, attrs, 0);
+	}
 
-  public RowView(Context context, AttributeSet attrs) {
-    this(context, attrs, 0);
-  }
+	public RowView(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
+		LayoutInflater inflater = LayoutInflater.from(context);
+		View view = inflater.inflate(R.layout.main_app_item, this, false);
+		mTextView = (TextView) view.findViewById(R.id.app_text);
+		addView(view);
+	}
 
-  public RowView(Context context, AttributeSet attrs, int defStyle) {
-    super(context, attrs, defStyle);
-    LayoutInflater inflater = LayoutInflater.from(context);
-    View view = inflater.inflate(R.layout.main_app_item, this, false);
-    mTextView = (TextView) view.findViewById(R.id.app_text);
-    mSubTextView = (TextView) view.findViewById(R.id.question_count);
-    addView(view);
-  }
+	public void setText(int textid, int subTextId, int drawrableId) {
+		String text = getResources().getString(textid);
+		String subText = getResources().getString(subTextId);
 
+		int color1 = getResources().getColor(android.R.color.black);
+		int color2 = getResources().getColor(android.R.color.darker_gray);
+		SpannableString ss = new SpannableString(text + "\n" + subText);
+		ss.setSpan(new ForegroundColorSpan(color1), 0, text.length(),
+				Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+		ss.setSpan(new ForegroundColorSpan(color2), text.length(), ss.length(),
+				Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-  public void setText(int resid, int drawrableId) {
-	  mTextView.setText(resid);
-	  Drawable drawable = getResources().getDrawable(drawrableId);
-	  drawable.setBounds(0, 0, 100, 30);
-	  mTextView.setCompoundDrawables(null, null, null, drawable);
-  }
-  
-  public void setSubtext(String text) {
-    mSubTextView.setText(text);
-  }
+		ss.setSpan(new AbsoluteSizeSpan(20, true), 0, text.length(),
+				Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+		ss.setSpan(new AbsoluteSizeSpan(12, true), text.length(), ss.length(),
+				Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+		mTextView.setText(ss);
+		Drawable drawable = getResources().getDrawable(drawrableId);
+		drawable.setBounds(0, 0, 100, 100);
+		mTextView.setCompoundDrawables(drawable, null, null, null);
+	}
+
 }
