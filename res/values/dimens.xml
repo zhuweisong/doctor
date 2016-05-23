@@ -10,7 +10,14 @@
     <dimen name="psts_dot_m_top">7dp</dimen>
     <dimen name="psts_dot_linelayout_h">23dp</dimen>
     <dimen name="psts_dot_txt_size">10sp</dimen>
-    
+
+    <!--first main -->
+    <dimen name="main_item_text_size">20sp</dimen>
+    <dimen name="main_item_subtext_size">12sp</dimen>
+    <dimen name="main_myitem_text_size">18sp</dimen>
+    <dimen name="main_item_padding">40dp</dimen>
+    <dimen name="main_myitem_padding">30dp</dimen>
+                
     <!--question-->
     <dimen name="question_main_font">18sp</dimen>
     <dimen name="question_option_fontsize">16sp</dimen>

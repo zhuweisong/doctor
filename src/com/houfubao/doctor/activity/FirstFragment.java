@@ -42,7 +42,7 @@ public class FirstFragment extends Fragment {
 		SAMPLES.add(new Sample(OrderTrainingActivity.class, 
 				R.string.special_subject_training, R.string.special_subject_training, R.drawable.rectangle_red));
 		SAMPLES.add(new Sample(OrderTrainingActivity.class, 
-				R.string.function_test, R.string.function_test, R.drawable.rectangle_blue));		
+				R.string.function_test, R.string.function_test, R.drawable.rectangle_green));		
 	}
 
     public static FirstFragment instance() {

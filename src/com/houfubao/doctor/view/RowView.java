@@ -51,6 +51,7 @@ public class RowView extends FrameLayout {
 
 		int color1 = getResources().getColor(android.R.color.black);
 		int color2 = getResources().getColor(android.R.color.darker_gray);
+
 		SpannableString ss = new SpannableString(text + "\n" + subText);
 		ss.setSpan(new ForegroundColorSpan(color1), 0, text.length(),
 				Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -59,7 +60,7 @@ public class RowView extends FrameLayout {
 
 		ss.setSpan(new AbsoluteSizeSpan(20, true), 0, text.length(),
 				Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-		ss.setSpan(new AbsoluteSizeSpan(12, true), text.length(), ss.length(),
+		ss.setSpan(new AbsoluteSizeSpan(14, true), text.length(), ss.length(),
 				Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
 		mTextView.setText(ss);

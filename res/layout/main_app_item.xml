@@ -2,12 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/game_tile_info"
-    android:paddingTop="24dp"
-    android:paddingBottom="24dp"
     android:layout_marginLeft="8dp"
     android:layout_marginRight="8dp"
     android:layout_marginTop="8dp"
-    android:layout_marginBottom="8dp"
     android:background="@color/white"
     android:layout_gravity="center_horizontal"
     android:layout_width="match_parent"
@@ -15,6 +12,8 @@
 
     <TextView
         android:id="@+id/app_text"
+    	android:paddingTop="@dimen/main_item_padding"
+    	android:paddingBottom="@dimen/main_item_padding"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawablePadding="20dp"
