@@ -7,23 +7,28 @@ import com.houfubao.doctor.R;
 import com.houfubao.doctor.logic.main.DoctorConst;
 import com.houfubao.doctor.logic.main.DoctorState;
 import com.houfubao.doctor.logic.online.QuestionManager;
+import com.houfubao.doctor.logic.utils.DoctorUtil;
 import com.houfubao.doctor.logic.utils.PreferencesUtils;
 import com.houfubao.doctor.logic.utils.QLog;
 import com.houfubao.doctor.view.RowView;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 /**
  * Created by sevenzhu on 2016/05/08.
  */
-public class FirstFragment extends Fragment {
+public class FirstFragment extends Fragment implements View.OnClickListener {
 
+	private TextView mMyCollection;
+	private TextView mMyError;
 	private ViewGroup mGridView;
 	private OnMainQuestionViewClicked mMainQuestionClicked;
 	
@@ -67,6 +72,21 @@ public class FirstFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.first_fragment, null);
         mGridView = (ViewGroup)view.findViewById(R.id.main_list_view);
+        mMyCollection = (TextView)view.findViewById(R.id.my_collection_question);
+        mMyError = (TextView)view.findViewById(R.id.my_error_question);
+        mMyCollection.setOnClickListener(this);
+        mMyError.setOnClickListener(this);
+        
+        //
+		Drawable drawable = getResources().getDrawable(R.drawable.jiakao_practice_star_day_s);
+		int width = DoctorUtil.dpToPx(32, getResources());
+		drawable.setBounds(0, 0, width, width);
+		mMyCollection.setCompoundDrawables(null, drawable, null, null);
+		
+		Drawable drawable1 = getResources().getDrawable(R.drawable.media__video_delete);
+		drawable1.setBounds(0, 0, width, width);
+		mMyError.setCompoundDrawables(null, drawable1, null, null);	
+        
         
         int size = SAMPLES.size();
         for (int i=0;i<size;i++) {
@@ -105,6 +125,12 @@ public class FirstFragment extends Fragment {
 			i.putExtra(OrderTrainingActivity.Question_Pos, mLastOrder);
 			startActivity(i);
 		}
+	}
+
+	@Override
+	public void onClick(View arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

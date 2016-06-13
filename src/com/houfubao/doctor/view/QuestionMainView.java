@@ -129,6 +129,7 @@ public class QuestionMainView extends RelativeLayout implements View.OnClickList
 		SpannableString spanString = new SpannableString("icon");
 		spanString.setSpan(imgSpan, 0, 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		mTitle.setText(spanString);
+		mTitle.append(" " + String.valueOf(question.getOrder()+1) + ".");
 		mTitle.append(question.getTitle());
 
 		// 答案选项

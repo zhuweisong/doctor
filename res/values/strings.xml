@@ -21,7 +21,9 @@
     <string name="question_analysis_key">"考点"</string>
     <string name="examing_menu_item">考试模式</string>
     <string name="learning_menu_item">学习模式</string>
-    
+    <string name="question_index_collection">收藏</string>
+    <string name="question_index_collection_selected">已收藏</string>
+        
     
     <string name="action_bar_help">帮助与反馈</string>
     <string name="action_bar_share">分享</string>

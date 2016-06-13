@@ -196,7 +196,8 @@ public class RequestorLeanClound extends Requestor {
 		}
 		QLog.i(TAG, "getChapter ");
 	    AVQuery<AVObject> query = new AVQuery<AVObject>("chapter");
-	    query.whereGreaterThan(ChapterEntry.ChapterColumns.COLUMN_UPDATE_AT, new Date(updateAt));
+	    Date updateAtLast = new Date(updateAt);
+	    query.whereGreaterThan(ChapterEntry.ChapterColumns.COLUMN_UPDATE_AT, updateAtLast);
 
 	    String callbackTag = owner + DoctorConst.SEPRATOR + tag 
 	    			+ DoctorConst.SEPRATOR + updateAt;

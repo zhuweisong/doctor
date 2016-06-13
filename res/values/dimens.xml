@@ -1,5 +1,6 @@
 <resources>
-
+    <dimen name="base_padding">16dp</dimen>   
+    
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
@@ -16,7 +17,7 @@
     <dimen name="main_item_subtext_size">12sp</dimen>
     <dimen name="main_myitem_text_size">18sp</dimen>
     <dimen name="main_item_padding">40dp</dimen>
-    <dimen name="main_myitem_padding">30dp</dimen>
+    <dimen name="main_myitem_padding">20dp</dimen>
     <dimen name="margin_padding_size">8dp</dimen>
     
                 
@@ -25,5 +26,5 @@
     <dimen name="question_option_fontsize">16sp</dimen>
     <dimen name="option_padding">12dp</dimen>    
     <dimen name="option_first_indent">12dp</dimen>    
-        
+ 
 </resources>

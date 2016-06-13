@@ -7,7 +7,7 @@ public class Question {
 	
 	@Override
 	public String toString() {
-		return "  :" + pos + "|" + title + "|" 
+		return "  :" + order + "|" + title + "|" 
 				+ option + "|" + answer + "|" 
 				+ chapter + "|" + analysis;
 	}
@@ -21,7 +21,7 @@ public class Question {
 	private String picture;
 	private String analysis;
 	private long updateAt;
-	private int pos;
+	private int order;
 	
 	private int flag; //客户端标记
 	
@@ -37,7 +37,7 @@ public class Question {
 		  this.picture = question.picture;
 		  this.analysis = question.analysis;
 		  this.updateAt = question.updateAt;
-		  this.pos = question.pos;
+		  this.order = question.order;
 	  }
 
 	  
@@ -50,7 +50,7 @@ public class Question {
 	  public Question setPicture(String picture) {this.picture = picture; return this;}
 	  public Question setAnalysis(String analysis) {this.analysis = analysis; return this;}
 	  public Question setUpdateAt(long updateAt) {this.updateAt = updateAt; return this; }
-	  public Question setOrder(int pos) {this.pos = pos;return this;}
+	  public Question setOrder(int pos) {this.order = pos;return this;}
 	  public Question setFlag(int flag) {this.flag = flag;return this;}
 
 	  
@@ -63,6 +63,6 @@ public class Question {
 	  public String getPicture() {return picture;}
 	  public String getAnalysis() {return analysis;}
 	  public long getUpdateAt() { return updateAt; }
-	  public int getOrder() {return pos;}
+	  public int getOrder() {return order;}
 	  public boolean isMultiChoice() {return isSetAttr(ATTR_MULTI_CHOICE);}
 }

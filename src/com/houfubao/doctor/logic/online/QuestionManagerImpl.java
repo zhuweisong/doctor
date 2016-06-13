@@ -140,7 +140,7 @@ public class QuestionManagerImpl extends QuestionManager implements NetworkState
 		mRequestor.getQuestions(mRequestCallback, ownerId, pos, NETWORK_RQUEST_COUNT);
 	}
 	
-	private void preloadFromDB(int curOrder)  {
+	private void preloadFromDB(int curOrder) {
 		int maxOrder = Math.min(curOrder + DB_PRELOAD_COUNT, mTotal);
 
 		for (int i = curOrder;i < maxOrder;i++) {

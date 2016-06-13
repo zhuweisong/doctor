@@ -7,7 +7,6 @@ import com.houfubao.doctor.R;
 import com.houfubao.doctor.logic.main.DoctorState;
 import com.houfubao.doctor.logic.online.Chapter;
 import com.houfubao.doctor.logic.online.QuestionManager;
-import com.houfubao.doctor.logic.utils.PreferencesUtils;
 import com.houfubao.doctor.logic.utils.QLog;
 import com.houfubao.doctor.logic.utils.SimplePool;
 import com.houfubao.doctor.view.QuestionMainView;
@@ -26,12 +25,18 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.Toast;
 
+/**
+ * 按题目顺序，有序进行训练的情况
+ * @author zhuweisong
+ */
 public class OrderTrainingActivity extends ActionBarActivity implements QuestionMainView.OptionClickCallback {
 	public final static String Question_Pos = "QUESTION_POS";
 
 	public static final String TAG = "OrderTrainingActivity";
 	
-    
+    /**
+     *当前出题的序号 
+     */
 	int mPos = 0;
 	QuestionMainView questionMainView;
 	
