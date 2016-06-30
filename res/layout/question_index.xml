@@ -5,60 +5,58 @@
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
     android:background="@color/white"
-    android:paddingLeft="@dimen/base_padding" 
-    android:paddingRight="@dimen/base_padding"
-    >
+    android:paddingLeft="@dimen/base_padding"
+    android:paddingRight="@dimen/base_padding" >
 
-    <LinearLayout 
+    <LinearLayout
+        android:id="@+id/question_index_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/question_index_top"
-        android:orientation="horizontal"
-        android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
-        >
-    <TextView
-        android:id="@+id/question_index_collect"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/question_index_collection"
-        android:drawablePadding="10dp"
-        android:layout_weight="0.25"
-        android:text="@string/question_index_collection" />
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal" >
 
-    <TextView
-        android:id="@+id/question_index_right"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
-        android:drawableLeft="@drawable/question_index_right"
-        android:drawablePadding="10dp"
-        android:layout_weight="0.25"
-        android:text="0"
-        android:textColor="@android:color/holo_blue_bright" />
+        <TextView
+            android:id="@+id/question_index_collect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:drawableLeft="@drawable/question_index_collection"
+            android:drawablePadding="10dp"
+            android:text="@string/question_index_collection" />
 
-    <TextView
-        android:id="@+id/question_index_error"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
-        android:drawableLeft="@drawable/question_index_error"
-        android:drawablePadding="10dp"
-        android:layout_weight="0.25"
-        android:text="0"
-        android:textColor="@android:color/holo_red_light" />
+        <TextView
+            android:id="@+id/question_index_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_weight="0.25"
+            android:drawableLeft="@drawable/question_index_right"
+            android:drawablePadding="10dp"
+            android:text="0"
+            android:textColor="@android:color/holo_blue_bright" />
 
-    <TextView
-        android:id="@+id/question_index_order_and_all"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/question_index_all"
-        android:drawablePadding="10dp"
-        android:text="0"
-        android:layout_weight="0.25"
-        android:textColor="@android:color/holo_red_light" />
+        <TextView
+            android:id="@+id/question_index_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_weight="0.25"
+            android:drawableLeft="@drawable/question_index_error"
+            android:drawablePadding="10dp"
+            android:text="0"
+            android:textColor="@android:color/holo_red_light" />
+
+        <TextView
+            android:id="@+id/question_index_order_and_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:drawableLeft="@drawable/question_index_all"
+            android:drawablePadding="10dp"
+            android:text="0"
+            android:textColor="@android:color/holo_red_light" />
     </LinearLayout>
-
 
     <com.tonicartos.widget.stickygridheaders.StickyGridHeadersGridView
         android:id="@+id/asset_grid"
@@ -67,7 +65,6 @@
         android:layout_below="@id/question_index_top"
         android:clipToPadding="false"
         android:columnWidth="100dip"
-        android:numColumns="auto_fit"
-        />
+        android:numColumns="auto_fit" />
 
 </RelativeLayout>
